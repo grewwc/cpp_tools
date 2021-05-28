@@ -85,7 +85,7 @@ public:
         case std::string::npos:
             break;
         default:
-            this->erase(this->cbegin() + pos + 1, this->cend());
+            this->erase(this->begin() + pos + 1, this->end());
         }
         return *this;
     }
@@ -157,7 +157,7 @@ public:
         }
         auto temp = os.str();
         // remove the last delim
-        temp.erase(temp.cend() - delim_len, temp.cend());
+        temp.erase(temp.end() - delim_len, temp.end());
         return stringW{std::move(temp)};
     }
 
