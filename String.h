@@ -10,61 +10,61 @@
 #include <cstring>
 #include <sstream>
 
-class stringW : public std::string
+class String : public std::string
 {
 public:
-    stringW() = default;
+    String() = default;
 
-    stringW(std::string &&s) noexcept
+    String(std::string &&s) noexcept
         : std::string{std::move(s)} {};
 
-    stringW(const std::string &s) noexcept
+    String(const std::string &s) noexcept
         : std::string{s} {};
 
-    stringW(const stringW &other) noexcept
+    String(const String &other) noexcept
         : std::string{other} {};
 
-    stringW(stringW &&other) noexcept
+    String(String &&other) noexcept
         : std::string((std::string &&) std::move(other))
     {
     }
 
-    stringW(const char *s) noexcept
+    String(const char *s) noexcept
         : std::string{s}
     {
     }
 
-    stringW &operator=(const stringW &other) noexcept
+    String &operator=(const String &other) noexcept
     {
         std::string::operator=(other);
         return *this;
     }
 
-    stringW &operator=(stringW &&other) noexcept
+    String &operator=(String &&other) noexcept
     {
         std::string::operator=((std::string &&) move(other));
         return *this;
     }
 
-    stringW &operator=(std::string &&s) noexcept
+    String &operator=(std::string &&s) noexcept
     {
         std::string::operator=(move(s));
         return *this;
     }
 
-    stringW &operator=(const std::string &s) noexcept
+    String &operator=(const std::string &s) noexcept
     {
         std::string::operator=(s);
         return *this;
     }
 
-    stringW &operator=(const char *s) noexcept
+    String &operator=(const char *s) noexcept
     {
         std::string::operator=(s);
         return *this;
     }
 
-    stringW &lstrip(char ch = ' ') noexcept
+    String &lstrip(char ch = ' ') noexcept
     {
         auto pos = find_first_not_of(ch);
         switch (pos)
@@ -77,7 +77,7 @@ public:
         return *this;
     }
 
-    stringW &rstrip(char ch = ' ') noexcept
+    String &rstrip(char ch = ' ') noexcept
     {
         std::string::size_type pos = find_last_not_of(ch);
         switch (pos)
@@ -90,39 +90,39 @@ public:
         return *this;
     }
 
-    stringW &strip(char ch = ' ') noexcept
+    String &strip(char ch = ' ') noexcept
     {
         lstrip(ch);
         rstrip(ch);
         return *this;
     }
 
-    stringW lstrip_copy(char ch = ' ') const noexcept
+    String lstrip_copy(char ch = ' ') const noexcept
     {
-        stringW res{*this};
+        String res{*this};
         res.lstrip(ch);
         return res;
     }
 
-    stringW rstrip_copy(char ch = ' ') const noexcept
+    String rstrip_copy(char ch = ' ') const noexcept
     {
-        stringW res{*this};
+        String res{*this};
         res.rstrip(ch);
         return res;
     }
 
-    stringW strip_copy(char ch = ' ') const noexcept
+    String strip_copy(char ch = ' ') const noexcept
     {
-        stringW res{*this};
+        String res{*this};
         res.strip(ch);
         return res;
     }
 
-    std::vector<stringW> split(char ch = ' ') const noexcept
+    std::vector<String> split(char ch = ' ') const noexcept
     {
-        std::vector<stringW> result;
+        std::vector<String> result;
         const auto N = size();
-        stringW word;
+        String word;
         for (int i = 0; i < N; i++)
         {
             char cur_ch = (*this)[i];
@@ -145,10 +145,10 @@ public:
     }
 
     template <typename Container>
-    static stringW join(const char *delim, Container &&data)
+    static String join(const char *delim, Container &&data)
     {
         if (data.size() == 0)
-            return stringW{""};
+            return String{""};
         std::ostringstream os;
         const auto delim_len = strlen(delim);
         for (auto &&each_str : std::forward<Container>(data))
@@ -158,7 +158,7 @@ public:
         auto temp = os.str();
         // remove the last delim
         temp.erase(temp.end() - delim_len, temp.end());
-        return stringW{std::move(temp)};
+        return String{std::move(temp)};
     }
 
     double to_double() const noexcept
@@ -231,13 +231,13 @@ public:
         return std::count(cbegin(), cend(), ch);
     }
 
-    stringW toLower_copy() const noexcept
+    String toLower_copy() const noexcept
     {
-        stringW res = *this;
+        String res = *this;
         res.toLower();
         return res;
     }
-    stringW &toLower() noexcept
+    String &toLower() noexcept
     {
         const size_t SIZE = (*this).size();
         for (size_t i = 0; i < SIZE; ++i)
@@ -252,13 +252,13 @@ public:
         return *this;
     }
 
-    stringW toUpper_copy() const noexcept
+    String toUpper_copy() const noexcept
     {
-        stringW res = *this;
+        String res = *this;
         res.toUpper();
         return res;
     }
-    stringW &toUpper() noexcept
+    String &toUpper() noexcept
     {
         const size_t SIZE = this->size();
         char temp;
@@ -271,12 +271,12 @@ public:
         return *this;
     }
 
-    stringW toCap_copy() const noexcept
+    String toCap_copy() const noexcept
     {
-        stringW res{*this};
+        String res{*this};
         return res.toCap();
     }
-    stringW &toCap() noexcept
+    String &toCap() noexcept
     {
         bool flag = true;
         const size_t SIZE = (*this).size();
@@ -315,7 +315,7 @@ public:
         if (END_SIZE > SIZE)
             return false;
         const size_t DIFF = SIZE - END_SIZE;
-        const stringW &this_obj = *this;
+        const String &this_obj = *this;
         for (size_t i = 0; i < END_SIZE; i++)
         {
             if (this_obj[DIFF + i] != end[i])
@@ -324,11 +324,11 @@ public:
         return true;
     }
 
-    bool startsWith(const stringW &begin) const noexcept
+    bool startsWith(const String &begin) const noexcept
     {
         return this->startsWith(static_cast<std::string>(begin));
     }
-    bool endsWith(const stringW &end) const noexcept
+    bool endsWith(const String &end) const noexcept
     {
         return this->endsWith(static_cast<std::string>(end));
     }
@@ -346,9 +346,9 @@ public:
         return contains(sub.data());
     }
 
-    stringW operator*(const size_t N) const noexcept
+    String operator*(const size_t N) const noexcept
     {
-        stringW res;
+        String res;
         const size_t SIZE = this->size();
         res.resize(N * SIZE);
         for (size_t i = 0; i < N; i++)
@@ -357,7 +357,7 @@ public:
         }
         return res;
     }
-    friend stringW operator*(const size_t N, const stringW &ws)
+    friend String operator*(const size_t N, const String &ws)
     {
         return ws * N;
     }
@@ -377,7 +377,7 @@ private:
             return ch;
         };
 
-        stringW spaceSaperated = replace_char_fn_copy(fn);
+        String spaceSaperated = replace_char_fn_copy(fn);
 
         std::vector<T> res;
         T i;
@@ -411,9 +411,9 @@ private:
         return res;
     }
 
-    stringW replace_char_fn_copy(const std::function<char(char)> &func) const noexcept
+    String replace_char_fn_copy(const std::function<char(char)> &func) const noexcept
     {
-        stringW res;
+        String res;
         res.resize(this->size());
         std::transform(cbegin(), cend(), res.begin(), func);
         return res;
