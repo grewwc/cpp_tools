@@ -1,30 +1,84 @@
-Start testing: Aug 15 21:29 CST
+Start testing: Aug 16 01:18 CST
 ----------------------------------------------------------
-1/1 Testing: HelloTest.shell_sort
-1/1 Test: HelloTest.shell_sort
-Command: "/Users/wwc129/cpp_tools/build/tests/sort_test" "--gtest_filter=HelloTest.shell_sort" "--gtest_also_run_disabled_tests"
+1/3 Testing: SORT_TEST.shell_sort
+1/3 Test: SORT_TEST.shell_sort
+Command: "/Users/wwc129/cpp_tools/build/tests/sort_test" "--gtest_filter=SORT_TEST.shell_sort" "--gtest_also_run_disabled_tests"
 Directory: /Users/wwc129/cpp_tools/build/tests
-"HelloTest.shell_sort" start time: Aug 15 21:29 CST
+"SORT_TEST.shell_sort" start time: Aug 16 01:18 CST
 Output:
 ----------------------------------------------------------
 Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
-Note: Google Test filter = HelloTest.shell_sort
+Note: Google Test filter = SORT_TEST.shell_sort
 [==========] Running 1 test from 1 test suite.
 [----------] Global test environment set-up.
-[----------] 1 test from HelloTest
-[ RUN      ] HelloTest.shell_sort
-[       OK ] HelloTest.shell_sort (0 ms)
-[----------] 1 test from HelloTest (0 ms total)
+[----------] 1 test from SORT_TEST
+[ RUN      ] SORT_TEST.shell_sort
+[       OK ] SORT_TEST.shell_sort (0 ms)
+[----------] 1 test from SORT_TEST (0 ms total)
 
 [----------] Global test environment tear-down
 [==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.02 sec
+Test time =   0.05 sec
 ----------------------------------------------------------
 Test Passed.
-"HelloTest.shell_sort" end time: Aug 15 21:29 CST
-"HelloTest.shell_sort" time elapsed: 00:00:00
+"SORT_TEST.shell_sort" end time: Aug 16 01:18 CST
+"SORT_TEST.shell_sort" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Aug 15 21:29 CST
+2/3 Testing: SORT_TEST.quick_sort
+2/3 Test: SORT_TEST.quick_sort
+Command: "/Users/wwc129/cpp_tools/build/tests/sort_test" "--gtest_filter=SORT_TEST.quick_sort" "--gtest_also_run_disabled_tests"
+Directory: /Users/wwc129/cpp_tools/build/tests
+"SORT_TEST.quick_sort" start time: Aug 16 01:18 CST
+Output:
+----------------------------------------------------------
+Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = SORT_TEST.quick_sort
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SORT_TEST
+[ RUN      ] SORT_TEST.quick_sort
+[       OK ] SORT_TEST.quick_sort (0 ms)
+[----------] 1 test from SORT_TEST (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"SORT_TEST.quick_sort" end time: Aug 16 01:18 CST
+"SORT_TEST.quick_sort" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/3 Testing: SORT_TEST.insertion_sort
+3/3 Test: SORT_TEST.insertion_sort
+Command: "/Users/wwc129/cpp_tools/build/tests/sort_test" "--gtest_filter=SORT_TEST.insertion_sort" "--gtest_also_run_disabled_tests"
+Directory: /Users/wwc129/cpp_tools/build/tests
+"SORT_TEST.insertion_sort" start time: Aug 16 01:18 CST
+Output:
+----------------------------------------------------------
+Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = SORT_TEST.insertion_sort
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SORT_TEST
+[ RUN      ] SORT_TEST.insertion_sort
+[       OK ] SORT_TEST.insertion_sort (0 ms)
+[----------] 1 test from SORT_TEST (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"SORT_TEST.insertion_sort" end time: Aug 16 01:18 CST
+"SORT_TEST.insertion_sort" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Aug 16 01:18 CST

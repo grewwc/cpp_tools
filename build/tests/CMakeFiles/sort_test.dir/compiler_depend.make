@@ -831,7 +831,8 @@ tests/CMakeFiles/sort_test.dir/sort_test.cc.o: /Users/wwc129/cpp_tools/tests/sor
   _deps/googletest-src/googletest/include/gtest/internal/gtest-port-arch.h \
   _deps/googletest-src/googletest/include/gtest/internal/gtest-port.h \
   _deps/googletest-src/googletest/include/gtest/internal/gtest-string.h \
-  _deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h
+  _deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h \
+  /Users/wwc129/cpp_tools/helper/sort.hpp
 
 
 _deps/googletest-src/googletest/include/gtest/internal/gtest-type-util.h:
@@ -2143,6 +2144,8 @@ _deps/googletest-src/googletest/include/gtest/gtest-message.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__type_traits/remove_cvref.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__ranges/empty.h:
+
+/Users/wwc129/cpp_tools/helper/sort.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__random/is_valid.h:
 

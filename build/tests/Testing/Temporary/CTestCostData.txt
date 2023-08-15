@@ -1,3 +1,6 @@
 HelloTest.BasicAssertions 1 0.0439993
 HelloTest.shell_sort 3 0.00764308
+SORT_TEST.shell_sort 15 0.00336259
+SORT_TEST.quick_sort 3 0.0142024
+SORT_TEST.insertion_sort 2 0.00244427
 ---
