@@ -6,7 +6,7 @@
 using namespace std;
 
 // Demonstrate some basic assertions.
-TEST(HelloTest, shell_sort)
+TEST(SORT_TEST, shell_sort)
 {
     vector<double> vec = wwc::uniform_gen<double, 50>(0, 1);
     ASSERT_FALSE(is_sorted(vec.begin(), vec.end()));
