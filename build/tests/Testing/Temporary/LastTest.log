@@ -1,0 +1,30 @@
+Start testing: Aug 15 21:29 CST
+----------------------------------------------------------
+1/1 Testing: HelloTest.shell_sort
+1/1 Test: HelloTest.shell_sort
+Command: "/Users/wwc129/cpp_tools/build/tests/sort_test" "--gtest_filter=HelloTest.shell_sort" "--gtest_also_run_disabled_tests"
+Directory: /Users/wwc129/cpp_tools/build/tests
+"HelloTest.shell_sort" start time: Aug 15 21:29 CST
+Output:
+----------------------------------------------------------
+Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
+Note: Google Test filter = HelloTest.shell_sort
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from HelloTest
+[ RUN      ] HelloTest.shell_sort
+[       OK ] HelloTest.shell_sort (0 ms)
+[----------] 1 test from HelloTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"HelloTest.shell_sort" end time: Aug 15 21:29 CST
+"HelloTest.shell_sort" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Aug 15 21:29 CST

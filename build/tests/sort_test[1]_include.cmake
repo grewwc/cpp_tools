@@ -1,0 +1,5 @@
+if(EXISTS "/Users/wwc129/cpp_tools/build/tests/sort_test[1]_tests.cmake")
+  include("/Users/wwc129/cpp_tools/build/tests/sort_test[1]_tests.cmake")
+else()
+  add_test(sort_test_NOT_BUILT sort_test_NOT_BUILT)
+endif()

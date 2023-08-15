@@ -16,18 +16,20 @@ namespace wwc
         {
             for (int i = h; i < n; i++)
             {
-                for (int j = i; j > 0; j -= h)
+                int j = i;
+                for (; j > 0 && vec[j - h] > vec[i]; j -= h)
+                    ;
+                if (j < i)
                 {
-                    if (vec[j] < vec[j - h])
+                    auto val_i = vec[i];
+                    for (int k = i; k >= j + h; k -= h)
                     {
-                        swap(vec[j], vec[j - h]);
+                        vec[k] = vec[k - h];
                     }
-                    else
-                    {
-                        break;
-                    }
+                    vec[j] = val_i;
                 }
             }
+
             h /= 3;
         }
     }

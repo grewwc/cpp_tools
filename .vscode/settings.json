@@ -80,6 +80,9 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "__config": "cpp"
+        "__config": "cpp",
+        "__debug": "cpp",
+        "memory_resource": "cpp",
+        "string_view": "cpp"
     }
 }
