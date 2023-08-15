@@ -37,13 +37,13 @@ namespace wwc
 
         String &operator=(String &&other) noexcept
         {
-            std::string::operator=((std::string &&)move(other));
+            std::string::operator=((std::string &&)std::move(other));
             return *this;
         }
 
         String &operator=(std::string &&s) noexcept
         {
-            std::string::operator=(move(s));
+            std::string::operator=(std::move(s));
             return *this;
         }
 
@@ -121,7 +121,7 @@ namespace wwc
                 {
                     if (!word.empty())
                     {
-                        result.emplace_back(move(word));
+                        result.emplace_back(std::move(word));
                         word.clear();
                     }
                 }
@@ -130,7 +130,7 @@ namespace wwc
                     word += cur_ch;
                 }
             }
-            if (!word.empty()) result.emplace_back(move(word));
+            if (!word.empty()) result.emplace_back(std::move(word));
             return result;
         }
 

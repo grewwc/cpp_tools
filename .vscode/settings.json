@@ -83,6 +83,11 @@
         "__config": "cpp",
         "__debug": "cpp",
         "memory_resource": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "__bit_reference": "cpp",
+        "__bits": "cpp",
+        "__split_buffer": "cpp",
+        "__verbose_abort": "cpp",
+        "bit": "cpp"
     }
 }
