@@ -47,6 +47,9 @@ namespace __helper
 
         virtual ~_Heap() = default;
 
+    protected:
+        virtual bool less(const T &val1, const T &val2) const = 0;
+
     private:
         size_t sz;
         void swim(size_t cur, size_t lo)
@@ -84,7 +87,6 @@ namespace __helper
             }
             sink(idx, hi);
         }
-        virtual bool less(const T &val1, const T &val2) const = 0;
         void change_data(size_t new_cap)
         {
             if (new_cap <= 16) return;

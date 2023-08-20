@@ -1,12 +1,12 @@
 HelloTest.BasicAssertions 1 0.0439993
 HelloTest.shell_sort 3 0.00764308
-SORT_TEST.shell_sort 32 9.76745e-05
-SORT_TEST.quick_sort 20 0.000135273
-SORT_TEST.insertion_sort 19 0.000388127
+SORT_TEST.shell_sort 33 0.00129794
+SORT_TEST.quick_sort 21 0.00170353
+SORT_TEST.insertion_sort 20 0.00196946
 sort_test_NOT_BUILT 0 0
 all_test_NOT_BUILT 0 0
 SORT_TEST.MinHeap 20 0
 SORT_TEST.MaxHeap 0 0
-TYPE_TEST.MinHeap 41 7.31087e-05
-TYPE_TEST.MaxHeap 64 4.88027e-05
+TYPE_TEST.MinHeap 42 0.000840978
+TYPE_TEST.MaxHeap 65 0.000599853
 ---

@@ -11,7 +11,7 @@ namespace wwc
         explicit MinHeap(int sz = 16) : __helper::_Heap<T>{sz} {}
 
     private:
-        virtual bool less(const T &val1, const T &val2) const { return val1 < val2; }
+        virtual bool less(const T &val1, const T &val2) const override { return val1 < val2; }
     };
 
     template <typename T>
@@ -21,6 +21,6 @@ namespace wwc
         explicit MaxHeap(int sz = 16) : __helper::_Heap<T>{sz} {}
 
     private:
-        virtual bool less(const T &val1, const T &val2) const { return val1 > val2; }
+        virtual bool less(const T &val1, const T &val2) const override { return val1 > val2; }
     };
 } // namespace wwc

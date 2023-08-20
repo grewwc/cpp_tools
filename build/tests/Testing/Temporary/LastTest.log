@@ -1,10 +1,10 @@
-Start testing: Aug 20 21:56 CST
+Start testing: Aug 20 22:13 CST
 ----------------------------------------------------------
 1/5 Testing: SORT_TEST.shell_sort
 1/5 Test: SORT_TEST.shell_sort
 Command: "/Users/wwc129/cpp_tools/build/tests/all_test" "--gtest_filter=SORT_TEST.shell_sort" "--gtest_also_run_disabled_tests"
 Directory: /Users/wwc129/cpp_tools/build/tests
-"SORT_TEST.shell_sort" start time: Aug 20 21:56 CST
+"SORT_TEST.shell_sort" start time: Aug 20 22:13 CST
 Output:
 ----------------------------------------------------------
 Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -20,10 +20,10 @@ Note: Google Test filter = SORT_TEST.shell_sort
 [==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.00 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"SORT_TEST.shell_sort" end time: Aug 20 21:56 CST
+"SORT_TEST.shell_sort" end time: Aug 20 22:13 CST
 "SORT_TEST.shell_sort" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -31,7 +31,7 @@ Test Passed.
 2/5 Test: SORT_TEST.quick_sort
 Command: "/Users/wwc129/cpp_tools/build/tests/all_test" "--gtest_filter=SORT_TEST.quick_sort" "--gtest_also_run_disabled_tests"
 Directory: /Users/wwc129/cpp_tools/build/tests
-"SORT_TEST.quick_sort" start time: Aug 20 21:56 CST
+"SORT_TEST.quick_sort" start time: Aug 20 22:13 CST
 Output:
 ----------------------------------------------------------
 Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -47,10 +47,10 @@ Note: Google Test filter = SORT_TEST.quick_sort
 [==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.00 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"SORT_TEST.quick_sort" end time: Aug 20 21:56 CST
+"SORT_TEST.quick_sort" end time: Aug 20 22:13 CST
 "SORT_TEST.quick_sort" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -58,7 +58,7 @@ Test Passed.
 3/5 Test: SORT_TEST.insertion_sort
 Command: "/Users/wwc129/cpp_tools/build/tests/all_test" "--gtest_filter=SORT_TEST.insertion_sort" "--gtest_also_run_disabled_tests"
 Directory: /Users/wwc129/cpp_tools/build/tests
-"SORT_TEST.insertion_sort" start time: Aug 20 21:56 CST
+"SORT_TEST.insertion_sort" start time: Aug 20 22:13 CST
 Output:
 ----------------------------------------------------------
 Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -74,10 +74,10 @@ Note: Google Test filter = SORT_TEST.insertion_sort
 [==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.01 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"SORT_TEST.insertion_sort" end time: Aug 20 21:56 CST
+"SORT_TEST.insertion_sort" end time: Aug 20 22:13 CST
 "SORT_TEST.insertion_sort" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -85,7 +85,7 @@ Test Passed.
 4/5 Test: TYPE_TEST.MinHeap
 Command: "/Users/wwc129/cpp_tools/build/tests/all_test" "--gtest_filter=TYPE_TEST.MinHeap" "--gtest_also_run_disabled_tests"
 Directory: /Users/wwc129/cpp_tools/build/tests
-"TYPE_TEST.MinHeap" start time: Aug 20 21:56 CST
+"TYPE_TEST.MinHeap" start time: Aug 20 22:13 CST
 Output:
 ----------------------------------------------------------
 Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -101,10 +101,10 @@ Note: Google Test filter = TYPE_TEST.MinHeap
 [==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.00 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"TYPE_TEST.MinHeap" end time: Aug 20 21:56 CST
+"TYPE_TEST.MinHeap" end time: Aug 20 22:13 CST
 "TYPE_TEST.MinHeap" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -112,7 +112,7 @@ Test Passed.
 5/5 Test: TYPE_TEST.MaxHeap
 Command: "/Users/wwc129/cpp_tools/build/tests/all_test" "--gtest_filter=TYPE_TEST.MaxHeap" "--gtest_also_run_disabled_tests"
 Directory: /Users/wwc129/cpp_tools/build/tests
-"TYPE_TEST.MaxHeap" start time: Aug 20 21:56 CST
+"TYPE_TEST.MaxHeap" start time: Aug 20 22:13 CST
 Output:
 ----------------------------------------------------------
 Running main() from /Users/wwc129/cpp_tools/build/_deps/googletest-src/googletest/src/gtest_main.cc
@@ -128,11 +128,11 @@ Note: Google Test filter = TYPE_TEST.MaxHeap
 [==========] 1 test from 1 test suite ran. (0 ms total)
 [  PASSED  ] 1 test.
 <end of output>
-Test time =   0.00 sec
+Test time =   0.04 sec
 ----------------------------------------------------------
 Test Passed.
-"TYPE_TEST.MaxHeap" end time: Aug 20 21:56 CST
+"TYPE_TEST.MaxHeap" end time: Aug 20 22:13 CST
 "TYPE_TEST.MaxHeap" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Aug 20 21:56 CST
+End testing: Aug 20 22:13 CST
