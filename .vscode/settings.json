@@ -88,6 +88,9 @@
         "__bits": "cpp",
         "__split_buffer": "cpp",
         "__verbose_abort": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "unordered_set": "cpp",
+        "__tree": "cpp",
+        "__hash_table": "cpp"
     }
 }

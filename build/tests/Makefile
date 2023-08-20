@@ -162,25 +162,25 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-tests/CMakeFiles/sort_test.dir/rule:
-	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/sort_test.dir/rule
-.PHONY : tests/CMakeFiles/sort_test.dir/rule
+tests/CMakeFiles/all_test.dir/rule:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/all_test.dir/rule
+.PHONY : tests/CMakeFiles/all_test.dir/rule
 
 # Convenience name for target.
-sort_test: tests/CMakeFiles/sort_test.dir/rule
-.PHONY : sort_test
+all_test: tests/CMakeFiles/all_test.dir/rule
+.PHONY : all_test
 
 # fast build rule for target.
-sort_test/fast:
-	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/sort_test.dir/build.make tests/CMakeFiles/sort_test.dir/build
-.PHONY : sort_test/fast
+all_test/fast:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/build
+.PHONY : all_test/fast
 
 sort_test.o: sort_test.cc.o
 .PHONY : sort_test.o
 
 # target to build an object file
 sort_test.cc.o:
-	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/sort_test.dir/build.make tests/CMakeFiles/sort_test.dir/sort_test.cc.o
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/sort_test.cc.o
 .PHONY : sort_test.cc.o
 
 sort_test.i: sort_test.cc.i
@@ -188,7 +188,7 @@ sort_test.i: sort_test.cc.i
 
 # target to preprocess a source file
 sort_test.cc.i:
-	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/sort_test.dir/build.make tests/CMakeFiles/sort_test.dir/sort_test.cc.i
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/sort_test.cc.i
 .PHONY : sort_test.cc.i
 
 sort_test.s: sort_test.cc.s
@@ -196,8 +196,32 @@ sort_test.s: sort_test.cc.s
 
 # target to generate assembly for a file
 sort_test.cc.s:
-	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/sort_test.dir/build.make tests/CMakeFiles/sort_test.dir/sort_test.cc.s
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/sort_test.cc.s
 .PHONY : sort_test.cc.s
+
+types_test.o: types_test.cc.o
+.PHONY : types_test.o
+
+# target to build an object file
+types_test.cc.o:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/types_test.cc.o
+.PHONY : types_test.cc.o
+
+types_test.i: types_test.cc.i
+.PHONY : types_test.i
+
+# target to preprocess a source file
+types_test.cc.i:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/types_test.cc.i
+.PHONY : types_test.cc.i
+
+types_test.s: types_test.cc.s
+.PHONY : types_test.s
+
+# target to generate assembly for a file
+types_test.cc.s:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/types_test.cc.s
+.PHONY : types_test.cc.s
 
 # Help Target
 help:
@@ -211,10 +235,13 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... sort_test"
+	@echo "... all_test"
 	@echo "... sort_test.o"
 	@echo "... sort_test.i"
 	@echo "... sort_test.s"
+	@echo "... types_test.o"
+	@echo "... types_test.i"
+	@echo "... types_test.s"
 .PHONY : help
 
 

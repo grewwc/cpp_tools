@@ -4,5 +4,5 @@
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
-include("/Users/wwc129/cpp_tools/build/tests/sort_test[1]_include.cmake")
+include("/Users/wwc129/cpp_tools/build/tests/all_test[1]_include.cmake")
 subdirs("../_deps/googletest-build")

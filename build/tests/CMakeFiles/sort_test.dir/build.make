@@ -83,19 +83,35 @@ tests/CMakeFiles/sort_test.dir/sort_test.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sort_test.dir/sort_test.cc.s"
 	cd /Users/wwc129/cpp_tools/build/tests && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/wwc129/cpp_tools/tests/sort_test.cc -o CMakeFiles/sort_test.dir/sort_test.cc.s
 
+tests/CMakeFiles/sort_test.dir/types_test.cc.o: tests/CMakeFiles/sort_test.dir/flags.make
+tests/CMakeFiles/sort_test.dir/types_test.cc.o: /Users/wwc129/cpp_tools/tests/types_test.cc
+tests/CMakeFiles/sort_test.dir/types_test.cc.o: tests/CMakeFiles/sort_test.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/wwc129/cpp_tools/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tests/CMakeFiles/sort_test.dir/types_test.cc.o"
+	cd /Users/wwc129/cpp_tools/build/tests && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT tests/CMakeFiles/sort_test.dir/types_test.cc.o -MF CMakeFiles/sort_test.dir/types_test.cc.o.d -o CMakeFiles/sort_test.dir/types_test.cc.o -c /Users/wwc129/cpp_tools/tests/types_test.cc
+
+tests/CMakeFiles/sort_test.dir/types_test.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sort_test.dir/types_test.cc.i"
+	cd /Users/wwc129/cpp_tools/build/tests && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/wwc129/cpp_tools/tests/types_test.cc > CMakeFiles/sort_test.dir/types_test.cc.i
+
+tests/CMakeFiles/sort_test.dir/types_test.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sort_test.dir/types_test.cc.s"
+	cd /Users/wwc129/cpp_tools/build/tests && /Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/wwc129/cpp_tools/tests/types_test.cc -o CMakeFiles/sort_test.dir/types_test.cc.s
+
 # Object files for target sort_test
 sort_test_OBJECTS = \
-"CMakeFiles/sort_test.dir/sort_test.cc.o"
+"CMakeFiles/sort_test.dir/sort_test.cc.o" \
+"CMakeFiles/sort_test.dir/types_test.cc.o"
 
 # External object files for target sort_test
 sort_test_EXTERNAL_OBJECTS =
 
 tests/sort_test: tests/CMakeFiles/sort_test.dir/sort_test.cc.o
+tests/sort_test: tests/CMakeFiles/sort_test.dir/types_test.cc.o
 tests/sort_test: tests/CMakeFiles/sort_test.dir/build.make
 tests/sort_test: lib/libgtest_main.a
 tests/sort_test: lib/libgtest.a
 tests/sort_test: tests/CMakeFiles/sort_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/wwc129/cpp_tools/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable sort_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/wwc129/cpp_tools/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable sort_test"
 	cd /Users/wwc129/cpp_tools/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sort_test.dir/link.txt --verbose=$(VERBOSE)
 	cd /Users/wwc129/cpp_tools/build/tests && /opt/homebrew/Cellar/cmake/3.27.2/bin/cmake -D TEST_TARGET=sort_test -D TEST_EXECUTABLE=/Users/wwc129/cpp_tools/build/tests/sort_test -D TEST_EXECUTOR= -D TEST_WORKING_DIR=/Users/wwc129/cpp_tools/build/tests -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D TEST_FILTER= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=sort_test_TESTS -D CTEST_FILE=/Users/wwc129/cpp_tools/build/tests/sort_test[1]_tests.cmake -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_XML_OUTPUT_DIR= -P /opt/homebrew/Cellar/cmake/3.27.2/share/cmake/Modules/GoogleTestAddTests.cmake
 

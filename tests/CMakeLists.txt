@@ -9,16 +9,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
+file(GLOB SOURCES "*.cc")
+
 add_executable(
-    sort_test
-    sort_test.cc
+    all_test
+    ${SOURCES}
 )
 
 target_link_libraries(
-    sort_test
+    all_test
     GTest::gtest_main
 )
 
 include(GoogleTest)
 
-gtest_discover_tests(sort_test)
+gtest_discover_tests(all_test)

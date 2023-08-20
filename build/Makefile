@@ -162,17 +162,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named sort_test
+# Target rules for targets named all_test
 
 # Build rule for target.
-sort_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sort_test
-.PHONY : sort_test
+all_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all_test
+.PHONY : all_test
 
 # fast build rule for target.
-sort_test/fast:
-	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/sort_test.dir/build.make tests/CMakeFiles/sort_test.dir/build
-.PHONY : sort_test/fast
+all_test/fast:
+	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/build
+.PHONY : all_test/fast
 
 #=============================================================================
 # Target rules for targets named gmock
@@ -238,11 +238,11 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... all_test"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
-	@echo "... sort_test"
 .PHONY : help
 
 

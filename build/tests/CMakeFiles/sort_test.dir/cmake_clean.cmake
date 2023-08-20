@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/sort_test.dir/sort_test.cc.o"
   "CMakeFiles/sort_test.dir/sort_test.cc.o.d"
+  "CMakeFiles/sort_test.dir/types_test.cc.o"
+  "CMakeFiles/sort_test.dir/types_test.cc.o.d"
   "sort_test"
   "sort_test.pdb"
   "sort_test[1]_tests.cmake"
