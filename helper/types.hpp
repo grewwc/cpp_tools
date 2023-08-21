@@ -8,14 +8,17 @@ namespace __helper
     class _Heap
     {
     public:
-        std::unique_ptr<T[]> data;
-        _Heap(int sz = 16) : sz{0}, cap{sz} { data = std::make_unique<T[]>(cap); }
+        _Heap(int sz = 16)
+            : sz{0}, cap{sz},
+              data{std::unique_ptr<T[], void (*)(T *)>((T *)malloc(cap * sizeof(T)), [](T *p) { free(p); })}
+        {
+        }
         bool insert(const T &val)
         {
             if (sz + 1 == cap)
             {
                 cap *= 2;
-                change_data(cap);
+                resize(cap);
             }
             data[++sz] = val;
             swim(sz, 1);
@@ -34,15 +37,15 @@ namespace __helper
             {
                 return std::nullopt;
             }
-            T result = data[1];
+            const T &result = data[1];
             std::swap(data[1], data[sz--]);
             sink(1, sz + 1);
             if (sz * 2 < cap)
             {
                 cap /= 2;
-                change_data(cap);
+                resize(cap, true);
             }
-            return {result};
+            return std::optional<T>(std::in_place, std::move(result));
         }
 
         virtual ~_Heap() = default;
@@ -51,7 +54,6 @@ namespace __helper
         virtual bool less(const T &val1, const T &val2) const = 0;
 
     private:
-        size_t sz;
         void swim(size_t cur, size_t lo)
         {
             size_t p = cur / 2;
@@ -87,14 +89,18 @@ namespace __helper
             }
             sink(idx, hi);
         }
-        void change_data(size_t new_cap)
+        void resize(size_t new_cap, bool shrink = false)
         {
-            if (new_cap <= 16) return;
-            T *new_data = new T[new_cap];
+            if (shrink && new_cap <= 1024) return;
+            T *new_data = (T *)malloc(new_cap * sizeof(T));
             std::copy_n(data.get(), sz + 1, new_data);
             data.reset(new_data);
         }
+
+        // private members
         size_t cap;
+        size_t sz;
+        std::unique_ptr<T[], void (*)(T *)> data;
     };
 
 } // namespace __helper
