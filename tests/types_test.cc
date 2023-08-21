@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <gtest/gtest.h>
 #include <iostream>
+#include <string>
 #include <vector>
 using namespace std;
 
@@ -30,6 +31,18 @@ TEST(TYPE_TEST, MinHeap)
     ASSERT_FALSE(is_sorted(vec.begin(), vec.end()));
     vec = gen_vec_by_heap<double>(vec, h);
     ASSERT_TRUE(is_sorted(vec.begin(), vec.end()));
+}
+
+// test minheap string
+TEST(TYPE_TEST, MinHeapStr)
+{
+    wwc::MinHeap<string> h{16};
+    vector<double> vec = wwc::uniform_gen<double, 500>(0, 1);
+    vector<string> str_vec(vec.size());
+    transform(vec.begin(), vec.end(), str_vec.begin(), [](double val) { return to_string(val); });
+    ASSERT_FALSE(is_sorted(str_vec.begin(), str_vec.end()));
+    str_vec = gen_vec_by_heap<string>(str_vec, h);
+    ASSERT_TRUE(is_sorted(str_vec.begin(), str_vec.end()));
 }
 
 // test maxheap

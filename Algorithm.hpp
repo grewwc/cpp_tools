@@ -1,5 +1,6 @@
 #pragma once
 #include "helper/sort.hpp"
+#include <iostream>
 #include <utility>
 namespace wwc
 {
@@ -45,4 +46,26 @@ namespace wwc
     {
         ::__helper::insertion_sort(vec, 0, vec.size());
     }
+
+    template <template <typename, typename...> class Container, typename T>
+    void merge_sort(Container<T> &vec)
+    {
+        if (vec.size() < INSERTION_SORT_THREASH)
+        {
+            ::__helper::insertion_sort(vec, 0, vec.size());
+            return;
+        }
+        const size_t len = vec.size();
+        const size_t half_len = len / 2 + 1;
+        Container<T> aux;
+        aux.reserve(vec.size());
+        for (size_t sz = 1; sz < len; sz *= 2)
+        {
+            for (size_t i = 0; i + sz < len; i += sz * 2)
+            {
+                ::__helper::_merge(vec, i, i + sz, std::min(i + 2 * sz, len), aux);
+            }
+        }
+    }
+
 } // namespace wwc

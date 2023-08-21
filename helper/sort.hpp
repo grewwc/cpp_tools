@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <utility>
 
 #define INSERTION_SORT_THREASH 16
@@ -67,6 +68,35 @@ namespace __helper
         auto p = _partition(vec, lo, hi);
         quick_sort(vec, lo, p.first);
         quick_sort(vec, p.second + 1, hi);
+    }
+
+    template <template <typename, typename...> class Container, typename T>
+    void _merge(Container<T> &vec, size_t lo, size_t mid, size_t hi, Container<T> &aux)
+    {
+        std::copy_n(std::cbegin(vec)+lo, hi-lo, std::back_inserter(std::begin(aux)+lo));
+        size_t p1 = lo, p2 = mid;
+        size_t p = lo;
+        while (p < hi)
+        {
+            if (p1 >= mid)
+            {
+                vec[p++] = *aux[p2++];
+                continue;
+            }
+            if (p2 >= hi)
+            {
+                vec[p++] = *aux[p1++];
+                continue;
+            }
+            if (*aux[p1] < *aux[p2])
+            {
+                vec[p++] = *aux[p1++];
+            }
+            else
+            {
+                vec[p++] = *aux[p2++];
+            }
+        }
     }
 
 } // namespace __helper
