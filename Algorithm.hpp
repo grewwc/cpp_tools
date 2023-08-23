@@ -68,4 +68,31 @@ namespace wwc
         }
     }
 
+    template <template <typename, typename...> class Container, typename T>
+    long binary_search(const Container<T> &container, const T &target, long lo = 0, long hi = 0)
+    {
+        auto sz = container.size();
+        if (sz == 0)
+        {
+            return -1;
+        }
+        if (hi == 0)
+        {
+            hi = static_cast<long>(sz);
+        }
+        while (lo < hi)
+        {
+            auto mid = (hi - lo) / 2 + lo;
+            if (container[mid] < target)
+            {
+                lo = mid + 1;
+            }
+            else
+            {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
 } // namespace wwc

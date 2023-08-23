@@ -175,6 +175,30 @@ all_test/fast:
 	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/build
 .PHONY : all_test/fast
 
+search_test.o: search_test.cc.o
+.PHONY : search_test.o
+
+# target to build an object file
+search_test.cc.o:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/search_test.cc.o
+.PHONY : search_test.cc.o
+
+search_test.i: search_test.cc.i
+.PHONY : search_test.i
+
+# target to preprocess a source file
+search_test.cc.i:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/search_test.cc.i
+.PHONY : search_test.cc.i
+
+search_test.s: search_test.cc.s
+.PHONY : search_test.s
+
+# target to generate assembly for a file
+search_test.cc.s:
+	cd /Users/wwc129/cpp_tools/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/all_test.dir/build.make tests/CMakeFiles/all_test.dir/search_test.cc.s
+.PHONY : search_test.cc.s
+
 sort_test.o: sort_test.cc.o
 .PHONY : sort_test.o
 
@@ -236,6 +260,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... all_test"
+	@echo "... search_test.o"
+	@echo "... search_test.i"
+	@echo "... search_test.s"
 	@echo "... sort_test.o"
 	@echo "... sort_test.i"
 	@echo "... sort_test.s"
