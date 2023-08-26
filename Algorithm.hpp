@@ -69,7 +69,7 @@ namespace wwc
     }
 
     template <template <typename, typename...> class Container, typename T>
-    long binary_search(const Container<T> &container, const T &target, long lo = 0, long hi = 0)
+    long binary_search_left(const Container<T> &container, const T &target, long lo = 0, long hi = 0)
     {
         auto sz = container.size();
         if (sz == 0)
@@ -90,6 +90,26 @@ namespace wwc
             else
             {
                 hi = mid;
+            }
+        }
+        return lo;
+    }
+
+    template <template <typename, typename...> class Container, typename T>
+    long binary_search_right(const Container<T> &container, const T &target)
+    {
+        const auto sz = container.size();
+        size_t lo = 0, hi = sz;
+        while (lo < hi)
+        {
+            auto mid = (hi - lo) / 2 + lo;
+            if (container[mid] > target)
+            {
+                hi = mid;
+            }
+            else
+            {
+                lo = mid + 1;
             }
         }
         return lo;

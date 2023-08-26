@@ -1,7 +1,6 @@
 #pragma once
 #include <algorithm>
 #include <utility>
-
 #define INSERTION_SORT_THREASH 16
 
 namespace __helper
@@ -16,8 +15,16 @@ namespace __helper
         for (size_t i = lo + 1; i < hi; i++)
         {
             size_t j = i;
-            for (; j > 0 && vec[i] < vec[j - 1]; j--)
-                ;
+            if constexpr (std::is_pointer_v<std::decay_t<decltype(vec[i])>>)
+            {
+                for (; j > 0 && *vec[i] < *vec[j - 1]; j--)
+                    ;
+            }
+            else
+            {
+                for (; j > 0 && vec[i] < vec[j - 1]; j--)
+                    ;
+            }
             if (j != i)
             {
                 auto val = vec[i];
@@ -25,6 +32,7 @@ namespace __helper
                 {
                     vec[k] = vec[k - 1];
                 }
+
                 vec[j] = val;
             }
         }
@@ -91,13 +99,27 @@ namespace __helper
                 vec[p++] = aux[p1++];
                 continue;
             }
-            if (aux[p1] < aux[p2])
+            if constexpr (std::is_pointer_v<std::decay_t<T>>)
             {
-                vec[p++] = aux[p1++];
+                if (*aux[p1] < *aux[p2])
+                {
+                    vec[p++] = aux[p1++];
+                }
+                else
+                {
+                    vec[p++] = aux[p2++];
+                }
             }
             else
             {
-                vec[p++] = aux[p2++];
+                if (aux[p1] < aux[p2])
+                {
+                    vec[p++] = aux[p1++];
+                }
+                else
+                {
+                    vec[p++] = aux[p2++];
+                }
             }
         }
     }
