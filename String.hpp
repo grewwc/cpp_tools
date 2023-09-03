@@ -25,7 +25,7 @@ namespace wwc
 
         String(const String &other) noexcept : std::string{other} {};
 
-        String(String &&other) noexcept : std::string(std::move(other)) {}
+        String(String &&other) noexcept : std::string(std::move(static_cast<std::string>(other))) {}
 
         String(const char *s) noexcept : std::string{s} {}
 
@@ -37,7 +37,7 @@ namespace wwc
 
         String &operator=(String &&other) noexcept
         {
-            std::string::operator=(std::move(other));
+            std::string::operator=(std::move(static_cast<std::string>(other)));
             return *this;
         }
 
