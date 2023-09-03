@@ -25,7 +25,7 @@ namespace wwc
 
         String(const String &other) noexcept : std::string{other} {};
 
-        String(String &&other) noexcept : std::string((std::string &&)std::move(other)) {}
+        String(String &&other) noexcept : std::string(std::move(other)) {}
 
         String(const char *s) noexcept : std::string{s} {}
 
@@ -37,7 +37,7 @@ namespace wwc
 
         String &operator=(String &&other) noexcept
         {
-            std::string::operator=((std::string &&)std::move(other));
+            std::string::operator=(std::move(other));
             return *this;
         }
 
@@ -342,6 +342,32 @@ namespace wwc
         String replace_char(char old, char new_) const noexcept
         {
             return replace_char_fn_copy([old, new_](char ch) { return ch == old ? new_ : ch; });
+        }
+
+        template <typename T>
+        String &operator+=(T &&val)
+        {
+            using raw_type = std::decay_t<decltype(val)>;
+            constexpr bool is_char = std::is_same_v<char, raw_type>;
+            constexpr bool is_integer = std::is_integral_v<raw_type>;
+            constexpr bool is_floating_point = std::is_floating_point_v<raw_type>;
+            if constexpr (is_floating_point && !is_char)
+            {
+                std::string temp_result = std::to_string(val);
+                // remove trailing 0
+                temp_result.erase(temp_result.find_last_not_of('0') + 1, std::string::npos);
+                std::string::operator+=(std::move(temp_result));
+            }
+            else if constexpr (is_integer && !is_char)
+            {
+                std::string::operator+=(std::to_string(val));
+            }
+            else
+            {
+                std::string::operator+=(val);
+            }
+
+            return *this;
         }
 
     private:
