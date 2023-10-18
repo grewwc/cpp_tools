@@ -1,28 +1,38 @@
 #pragma once
-#include "RandomUtils.hpp"
 #include <algorithm>
 #include <vector>
-namespace wwc
-{
+
+#include "RandomUtils.hpp"
+namespace wwc {
     template <typename T, template <typename, typename...> class Container,
               typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
-    Container<const T *> to_pointer_container(const Container<T> &container)
-    {
+    Container<const T *> to_pointer_container(const Container<T> &container) {
         Container<const T *> result;
         result.reserve(container.size());
-        std::transform(std::cbegin(container), std::cend(container), std::back_inserter<Container<const T *>>(result),
+        std::transform(std::cbegin(container), std::cend(container),
+                       std::back_inserter<Container<const T *>>(result),
                        [](const T &val) { return &val; });
         return result;
     }
 
     template <typename T, template <typename, typename...> class Container,
               typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
-    Container<T *> to_pointer_container(Container<T> &container)
-    {
+    Container<T *> to_pointer_container(Container<T> &container) {
         Container<T *> result;
         result.reserve(container.size());
-        std::transform(std::begin(container), std::end(container), std::back_inserter<Container<T *>>(result),
+        std::transform(std::begin(container), std::end(container),
+                       std::back_inserter<Container<T *>>(result),
                        [](T &val) { return &val; });
         return result;
     }
-} // namespace wwc
+
+    template <typename FirstArg, typename... Args>
+    void print(FirstArg &&first, Args &&...args) {
+        std::cout << "[" << std::forward<FirstArg>(first) << "]";
+        ((cout << ", "
+               << "[" << std::forward<Args>(args) << "]"),
+         ...);
+        cout << endl;
+    }
+
+}  // namespace wwc
