@@ -4,7 +4,6 @@
 #include <vector>
 static std::random_device __device;
 
-using namespace std;
 
 namespace wwc {
     template <typename T, unsigned N>

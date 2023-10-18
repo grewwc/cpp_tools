@@ -29,10 +29,10 @@ namespace wwc {
     template <typename FirstArg, typename... Args>
     void print(FirstArg &&first, Args &&...args) {
         std::cout << "[" << std::forward<FirstArg>(first) << "]";
-        ((cout << ", "
+        ((std::cout << ", "
                << "[" << std::forward<Args>(args) << "]"),
          ...);
-        cout << endl;
+        std::cout << std::endl;
     }
 
 }  // namespace wwc
