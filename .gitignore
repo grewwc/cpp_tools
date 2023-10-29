@@ -2,4 +2,4 @@
 main.cpp
 .vscode
 build
-*.dylib
+lib

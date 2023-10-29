@@ -1,7 +1,3 @@
-set(BUILD_TESTING OFF)
-if (APPLE)
-    set(CMAKE_OSX_ARCHITECTURES "arm64")
-endif()
 
 add_subdirectory(gflags)
 
@@ -11,6 +7,10 @@ file(GLOB GLOG_SOURCES
     glog/src/symbolize.cc 
     glog/src/demangle.cc
     glog/src/logging.cc
+    glog/src/raw_logging.cc
+    glog/src/signalhandler.cc
+    glog/src/vlog_is_on.cc
+    glog/src/dangle.cc
 )
 
 target_sources(cpp_tools PRIVATE 
