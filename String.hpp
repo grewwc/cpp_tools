@@ -334,8 +334,7 @@ namespace wwc {
         template <typename T>
         std::vector<T> find_all_number(char type) const noexcept {
             const auto &fn = [](char ch) {
-                if (!isdigit(ch) && ch != '.' && ch != 'e' && ch != '+' &&
-                    ch != '-')
+                if (!isdigit(ch) && ch != '.' && ch != 'e' && ch != '+' && ch != '-')
                     return ' ';
                 return ch;
             };

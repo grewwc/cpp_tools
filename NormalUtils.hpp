@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "RandomUtils.hpp"
+#include "src/fileutils.hpp"
 namespace wwc {
     template <typename T, template <typename, typename...> class Container,
               typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
@@ -29,9 +30,7 @@ namespace wwc {
     template <typename FirstArg, typename... Args>
     void print(FirstArg &&first, Args &&...args) {
         std::cout << "[" << std::forward<FirstArg>(first) << "]";
-        ((std::cout << ", "
-               << "[" << std::forward<Args>(args) << "]"),
-         ...);
+        ((std::cout << ", " << "[" << std::forward<Args>(args) << "]"), ...);
         std::cout << std::endl;
     }
 

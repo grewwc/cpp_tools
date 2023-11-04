@@ -1,7 +1,15 @@
 
 add_subdirectory(gflags)
+add_subdirectory(cJson)
 
 file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
+
+file(GLOB CJSON_HEADERS cJSON/*.h)
+file(GLOB CJSON_SOURCES cJSON/*.c)
+
+message("copy cjson file")
+file(COPY ${CJSON_HEADERS} DESTINATION ${CMAKE_SOURCE_DIR}/include)
+
 file(GLOB GLOG_SOURCES 
     glog/src/utilities.cc
     glog/src/symbolize.cc 
@@ -16,6 +24,7 @@ file(GLOB GLOG_SOURCES
 target_sources(cpp_tools PRIVATE 
     ${GFLAGS_SOURCES}
     ${GLOG_SOURCES}
+    ${CJSON_SOURCES}
 )
 
 find_package(Threads REQUIRED)
