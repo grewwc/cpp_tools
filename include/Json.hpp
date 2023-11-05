@@ -60,15 +60,12 @@ namespace wwc {
 
     public:
         explicit JSONObject() : data{cJSON_CreateObject()} {}
-        explicit JSONObject(cJSON* data);
-        bool free() {
-            if (data != nullptr) {
-                cJSON_free(data);
-                return true;
+        explicit JSONObject(cJSON* data, bool is_root=false);
+        ~JSONObject() {
+            if (is_root && valid_data()) {
+                cJSON_Delete(data);
             }
-            return false;
         }
-
         bool contains(const char* name) const {
             if (name == nullptr || data == nullptr) {
                 return false;
@@ -82,8 +79,8 @@ namespace wwc {
         bool getBool(const char* name) const;
         std::shared_ptr<JSONObject> getJSONObject(const char* name) const;
         std::shared_ptr<JSONArray> getJSONArray(const char* name) const;
-        cJSON* mutable_data() { return data; }
-        const cJSON* const_data() const { return data; }
+        cJSON* mutableData() { return data; }
+        const cJSON* constData() const { return data; }
         const char* toString() const {
             if (!valid_data()) {
                 std::cerr << "Non-valid data" << std::endl;
@@ -144,11 +141,11 @@ namespace wwc {
                 if (d != nullptr) {
                     if (d->type == cJSON_Object) {
                         cJSON_ReplaceItemInObjectCaseSensitive(
-                            data, key, value->mutable_data());
+                            data, key, value->mutableData());
                         return;
                     }
                 }
-                cJSON_AddItemToObject(data, key, value->mutable_data());
+                cJSON_AddItemToObject(data, key, value->mutableData());
             }
         }
 
@@ -161,32 +158,33 @@ namespace wwc {
         }
 
     private:
-        cJSON* data;
+        cJSON* data = nullptr;
+        bool is_root = false;
     };
 
+    // JSONARray
     class JSONArray {
     public:
         explicit JSONArray() : data{cJSON_CreateArray()} {}
-        explicit JSONArray(cJSON* data) : data{data} {
+        explicit JSONArray(cJSON* data, bool is_root = false)
+            : data{data}, is_root{is_root} {
             if (data == nullptr) {
                 std::cerr << "data is null" << std::endl;
             }
         }
-        bool free() {
-            if (data != nullptr) {
+        ~JSONArray() {
+            if (is_root && valid_data()) {
                 cJSON_Delete(data);
-                return true;
             }
-            return false;
         }
-
+        static std::shared_ptr<JSONArray> parseFromFile(const char* filename);
         int getInt(std::size_t i) const;
         long getLong(std::size_t i) const;
         double getDouble(std::size_t i) const;
         bool getBool(std::size_t) const;
         std::string getString(std::size_t i) const;
-        cJSON* mutable_data() { return data; }
-        const cJSON* const_data() const { return data; }
+        cJSON* mutableData() { return data; }
+        const cJSON* constData() const { return data; }
         std::shared_ptr<JSONObject> getJSONObject(std::size_t i) const;
         std::shared_ptr<JSONArray> getJSONArray(std::size_t i) const;
         const char* toString() const;
@@ -219,7 +217,7 @@ namespace wwc {
                                  std::is_same_v<
                                      std::decay_t<std::shared_ptr<JSONArray>>,
                                      decay_type>) {
-                new_data = value->mutable_data();
+                new_data = value->mutableData();
             }
             if (exist) {
                 cJSON_ReplaceItemInArray(data, i, new_data);
@@ -257,6 +255,7 @@ namespace wwc {
         }
 
     private:
-        cJSON* data;
+        cJSON* data = nullptr;
+        bool is_root = false;
     };
 }  // namespace wwc

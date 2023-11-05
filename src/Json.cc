@@ -6,7 +6,8 @@
 
 using namespace std;
 namespace wwc {
-    JSONObject::JSONObject(cJSON* data) : data{data} {
+    JSONObject::JSONObject(cJSON* data, bool is_root)
+        : data{data}, is_root{is_root} {
         if (data == nullptr) {
             cerr << "data is null" << endl;
         }
@@ -66,12 +67,24 @@ namespace wwc {
 
     shared_ptr<JSONObject> JSONObject::parseFromFile(const char* filename) {
         string content = readTextFromFile(filename);
+        if (content == "") {
+            cerr << "Error parsing JSONObject from file: " << filename << endl;
+            return nullptr;
+        }
         cJSON* data = cJSON_Parse(content.c_str());
-        auto jsonObject = make_shared<JSONObject>(data);
-        return jsonObject;
+        return make_shared<JSONObject>(data, true);
     }
 
     // JSONArray
+    shared_ptr<JSONArray> JSONArray::parseFromFile(const char* filename) {
+        string content = readTextFromFile(filename);
+        if (content == "") {
+            cerr << "Error parsing JSONArray from file: " << filename << endl;
+            return nullptr;
+        }
+        cJSON* data = cJSON_Parse(content.c_str());
+        return make_shared<JSONArray>(data, true);
+    }
     int JSONArray::getInt(size_t i) const {
         return getNumber<int, size_t>(data, i);
     }
