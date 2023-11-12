@@ -4,15 +4,19 @@
 #include <exception>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <type_traits>
+#include <unordered_set>
 
 namespace wwc {
+    class JSONArray;
 
-    template <
-        typename T, typename name_type,
-        typename _ = std::enable_if_t<std::is_default_constructible_v<T>, void>>
-    T getNumber(const cJSON* data, name_type name) {
+    template <typename T, typename name_type, typename _ = std::enable_if_t<std::is_default_constructible_v<T>, void>>
+    std::optional<T> getNumber(const cJSON* data, name_type name) {
+        if (data == nullptr) {
+            return {};
+        }
         cJSON* num_data;
         // const char*
         if constexpr (std::is_same_v<name_type, const char*>) {
@@ -21,7 +25,6 @@ namespace wwc {
             }
 
             if (!cJSON_HasObjectItem(data, name)) {
-                std::cerr << "Non-existing name: " << name << std::endl;
                 return {};
             }
             num_data = cJSON_GetObjectItemCaseSensitive(data, name);
@@ -31,7 +34,7 @@ namespace wwc {
             }
             const auto sz = cJSON_GetArraySize(data);
             if (name >= sz) {
-                std::cerr << "size is smaller, size: " << sz << std::endl;
+                return {};
             }
             num_data = cJSON_GetArrayItem(data, name);
         }
@@ -39,11 +42,8 @@ namespace wwc {
             return {};
         }
         auto node_type = num_data->type;
-        if (node_type != cJSON_Number && node_type != cJSON_True &&
-            node_type != cJSON_False) {
-            std::cerr << "node " << name << " does not hold integral value"
-                      << std::endl;
-            return 0;
+        if (node_type != cJSON_Number && node_type != cJSON_True && node_type != cJSON_False) {
+            return {};
         }
         using decay_type = std::decay_t<T>;
         if constexpr (std::is_integral_v<decay_type>) {
@@ -52,15 +52,14 @@ namespace wwc {
         return num_data->valuedouble;
     }
 
-    class JSONArray;
-
     class JSONObject {
     public:
         static std::shared_ptr<JSONObject> parseFromFile(const char* filename);
 
     public:
+        friend class JSONArray;
         explicit JSONObject() : data{cJSON_CreateObject()} {}
-        explicit JSONObject(cJSON* data, bool is_root=false);
+        explicit JSONObject(cJSON* data, bool is_root = false);
         ~JSONObject() {
             if (is_root && valid_data()) {
                 cJSON_Delete(data);
@@ -72,23 +71,24 @@ namespace wwc {
             }
             return cJSON_HasObjectItem(data, name);
         }
-        std::string getString(const char* name) const;
-        int getInt(const char* name) const;
-        long getLong(const char* name) const;
-        double getDouble(const char* name) const;
-        bool getBool(const char* name) const;
+        std::optional<std::string> getString(const char* name) const;
+        std::optional<int> getInt(const char* name) const;
+        std::optional<long> getLong(const char* name) const;
+        std::optional<double> getDouble(const char* name) const;
+        std::optional<bool> getBool(const char* name) const;
         std::shared_ptr<JSONObject> getJSONObject(const char* name) const;
         std::shared_ptr<JSONArray> getJSONArray(const char* name) const;
+        std::unordered_set<std::string> keys() const;
         cJSON* mutableData() { return data; }
         const cJSON* constData() const { return data; }
         const char* toString() const {
             if (!valid_data()) {
-                std::cerr << "Non-valid data" << std::endl;
                 return "";
             }
             return cJSON_Print(data);
         }
         bool toFile(const char* filename) const;
+
         template <typename T>
         void put(const char* key, const T& value) {
             if (!valid_data() || key == nullptr) {
@@ -98,8 +98,7 @@ namespace wwc {
             using decay_type = std::decay_t<decltype(value)>;
             cJSON* d = cJSON_GetObjectItemCaseSensitive(data, key);
             // string
-            if constexpr (std::is_same_v<decay_type, const char*> ||
-                          std::is_same_v<decay_type, std::string>) {
+            if constexpr (std::is_same_v<decay_type, const char*> || std::is_same_v<decay_type, std::string>) {
                 // exist
                 if (d != nullptr) {
                     if (d->type == cJSON_String) {
@@ -132,16 +131,10 @@ namespace wwc {
                 }
                 cJSON* new_item = cJSON_CreateNumber(value);
                 cJSON_AddItemToObject(data, key, new_item);
-            } else if constexpr (std::is_same_v<
-                                     std::decay_t<std::shared_ptr<JSONObject>>,
-                                     decay_type> ||
-                                 std::is_same_v<
-                                     std::decay_t<std::shared_ptr<JSONArray>>,
-                                     decay_type>) {
+            } else if constexpr (std::is_same_v<std::decay_t<std::shared_ptr<JSONObject>>, decay_type> || std::is_same_v<std::decay_t<std::shared_ptr<JSONArray>>, decay_type>) {
                 if (d != nullptr) {
                     if (d->type == cJSON_Object) {
-                        cJSON_ReplaceItemInObjectCaseSensitive(
-                            data, key, value->mutableData());
+                        cJSON_ReplaceItemInObjectCaseSensitive(data, key, value->mutableData());
                         return;
                     }
                 }
@@ -151,7 +144,11 @@ namespace wwc {
 
     private:
         bool valid_data() const {
-            if (data == nullptr) {
+            if (data == nullptr || !cJSON_IsObject(data)) {
+                return false;
+            }
+            auto type = data->type;
+            if (type != cJSON_Object) {
                 return false;
             }
             return true;
@@ -166,23 +163,18 @@ namespace wwc {
     class JSONArray {
     public:
         explicit JSONArray() : data{cJSON_CreateArray()} {}
-        explicit JSONArray(cJSON* data, bool is_root = false)
-            : data{data}, is_root{is_root} {
-            if (data == nullptr) {
-                std::cerr << "data is null" << std::endl;
-            }
-        }
+        explicit JSONArray(cJSON* data, bool is_root = false) : data{data}, is_root{is_root} {}
         ~JSONArray() {
             if (is_root && valid_data()) {
                 cJSON_Delete(data);
             }
         }
         static std::shared_ptr<JSONArray> parseFromFile(const char* filename);
-        int getInt(std::size_t i) const;
-        long getLong(std::size_t i) const;
-        double getDouble(std::size_t i) const;
-        bool getBool(std::size_t) const;
-        std::string getString(std::size_t i) const;
+        std::optional<int> getInt(std::size_t i) const;
+        std::optional<long> getLong(std::size_t i) const;
+        std::optional<double> getDouble(std::size_t i) const;
+        std::optional<bool> getBool(std::size_t) const;
+        std::optional<std::string> getString(std::size_t i) const;
         cJSON* mutableData() { return data; }
         const cJSON* constData() const { return data; }
         std::shared_ptr<JSONObject> getJSONObject(std::size_t i) const;
@@ -192,12 +184,10 @@ namespace wwc {
         template <typename T>
         void put(std::size_t i, const char* key, const T& value) {
             if (!valid_data()) {
-                std::cerr << "JSONArray is null" << std::endl;
                 return;
             }
             const auto sz = size();
             if (i < 0 || i > sz) {
-                std::cerr << "Invalid index: " << i << std::endl;
                 return;
             }
             cJSON* sub = cJSON_GetArrayItem(data, i);
@@ -208,15 +198,9 @@ namespace wwc {
                 new_data = cJSON_CreateBool(value);
             } else if constexpr (std::is_integral_v<decay_type>) {
                 new_data = cJSON_CreateNumber(value);
-            } else if constexpr (std::is_same_v<std::string, decay_type> ||
-                                 std::is_same_v<const char*, decay_type>) {
+            } else if constexpr (std::is_same_v<std::string, decay_type> || std::is_same_v<const char*, decay_type>) {
                 new_data = cJSON_CreateString(value);
-            } else if constexpr (std::is_same_v<
-                                     std::decay_t<std::shared_ptr<JSONObject>>,
-                                     decay_type> ||
-                                 std::is_same_v<
-                                     std::decay_t<std::shared_ptr<JSONArray>>,
-                                     decay_type>) {
+            } else if constexpr (std::is_same_v<std::decay_t<std::shared_ptr<JSONObject>>, decay_type> || std::is_same_v<std::decay_t<std::shared_ptr<JSONArray>>, decay_type>) {
                 new_data = value->mutableData();
             }
             if (exist) {
@@ -232,7 +216,6 @@ namespace wwc {
         }
         std::size_t size() const {
             if (data == nullptr) {
-                std::cerr << "Non-valid data" << std::endl;
                 return 0;
             }
             return cJSON_GetArraySize(data);
@@ -242,13 +225,16 @@ namespace wwc {
         bool check_size(int i) const {
             const auto sz = cJSON_GetArraySize(data);
             if (i >= sz || i < 0) {
-                std::cerr << "size is smaller, size: " << sz << std::endl;
                 return false;
             }
             return true;
         }
         bool valid_data() const {
-            if (data == nullptr) {
+            if (data == nullptr || !cJSON_IsArray(data)) {
+                return false;
+            }
+            const auto type = data->type;
+            if (type != cJSON_Array) {
                 return false;
             }
             return true;
@@ -257,5 +243,6 @@ namespace wwc {
     private:
         cJSON* data = nullptr;
         bool is_root = false;
+        friend class JSONObject;
     };
 }  // namespace wwc

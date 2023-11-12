@@ -14,7 +14,7 @@ add_library(cpp_tools STATIC "")
 add_subdirectory(tests)
 add_subdirectory(thirdparty)
 add_subdirectory(src)
+add_subdirectory(executable_src)
+
 
 message("Version=${CMAKE_CXX_STANDARD}")
-
-
