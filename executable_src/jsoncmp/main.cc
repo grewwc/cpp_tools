@@ -222,8 +222,8 @@ int main(int argc, char* argv[]) {
         }
     }
     bool has_diff = false;
-    has_diff = print_summary(keyset_1, f1, ">>>>>>") || has_diff;
-    has_diff = print_summary(keyset_2, f2, "<<<<<<") || has_diff;
+    has_diff = print_summary(keyset_1, f1, ">>>>>> ") || has_diff;
+    has_diff = print_summary(keyset_2, f2, "<<<<<< ") || has_diff;
     has_diff = print_summary(diff_keys, nullptr, "Diff") || has_diff;
     if (!has_diff) {
         std::cout << "Same." << std::endl;
