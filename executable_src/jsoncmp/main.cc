@@ -104,7 +104,7 @@ void compare_json<Ptr_JSONObject>(Ptr_JSONObject obj1, Ptr_JSONObject obj2, cons
     const auto key_set2 = obj2->keys();
     for (const std::string& key : key_set1) {
         if (key_set2.find(key) == key_set1.cend()) {
-            add_key(diff_keys, prev_key);
+            add_key(diff_keys, key);
             continue;
         }
         // found in key_set2
