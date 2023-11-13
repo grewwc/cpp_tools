@@ -12,6 +12,12 @@ struct config {
     bool only_compare_keys = false;
 };
 
+void add_key(std::unordered_set<std::string>& diff_keys, const std::string& key) {
+    if (key != "") {
+        diff_keys.emplace(std::move(const_cast<std::string&>(key)));
+    }
+}
+
 void print_usage() {
     std::cout << "usage: jsoncmp ${file1} ${file2} -k true -array false" << std::endl;
 }
@@ -23,7 +29,7 @@ void compare_json(T data1, T data2, const std::string& prev_key, std::unordered_
         return;
     }
     if (data1 != data2) {
-        diff_keys.emplace(std::move(const_cast<std::string&>(prev_key)));
+        add_key(diff_keys, prev_key);
         return;
     }
 }
@@ -38,7 +44,7 @@ void compare_json(std::optional<T> data1, std::optional<T> data2, const std::str
     }
     if ((data1.has_value() && !data2.has_value()) || (!data1.has_value() && data2.has_value())) {
         if (!options.only_compare_keys) {
-            diff_keys.emplace(std::move(const_cast<std::string&>(prev_key)));
+            add_key(diff_keys, prev_key);
         }
         return;
     }
@@ -52,15 +58,15 @@ void compare_json<Ptr_JSONArray>(Ptr_JSONArray arr1, Ptr_JSONArray arr2, const s
         return;
     }
     if (arr1 == nullptr && arr2 != nullptr) {
-        diff_keys.emplace(std::move(const_cast<std::string&>(prev_key)));
+        add_key(diff_keys, prev_key);
         return;
     }
     if (arr1 == nullptr && arr2 != nullptr) {
-        diff_keys.emplace(std::move(const_cast<std::string&>(prev_key)));
+        add_key(diff_keys, prev_key);
         return;
     }
     if (arr1->size() != arr2->size() && !only_compare_keys) {
-        diff_keys.emplace(std::move(const_cast<std::string&>(prev_key)));
+        add_key(diff_keys, prev_key);
         return;
     }
     if (only_compare_keys) {
@@ -84,11 +90,11 @@ void compare_json<Ptr_JSONObject>(Ptr_JSONObject obj1, Ptr_JSONObject obj2, cons
         return;
     }
     if (obj1 == nullptr && obj2 != nullptr) {
-        diff_keys.emplace(std::move(const_cast<std::string&>(prev_key)));
+        add_key(diff_keys, prev_key);
         return;
     }
     if (obj1 == nullptr && obj2 != nullptr) {
-        diff_keys.emplace(std::move(const_cast<std::string&>(prev_key)));
+        add_key(diff_keys, prev_key);
         return;
     }
     if (options.only_compare_keys) {
@@ -98,7 +104,7 @@ void compare_json<Ptr_JSONObject>(Ptr_JSONObject obj1, Ptr_JSONObject obj2, cons
     const auto key_set2 = obj2->keys();
     for (const std::string& key : key_set1) {
         if (key_set2.find(key) == key_set1.cend()) {
-            diff_keys.emplace(std::move(const_cast<std::string&>(key)));
+            add_key(diff_keys, prev_key);
             continue;
         }
         // found in key_set2
