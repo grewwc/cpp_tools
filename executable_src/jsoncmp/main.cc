@@ -7,15 +7,30 @@
 
 using Ptr_JSONArray = std::shared_ptr<wwc::JSONArray>;
 using Ptr_JSONObject = std::shared_ptr<wwc::JSONObject>;
+#define MAX_VAL_LEN 100
 
 struct config {
     bool only_compare_keys = false;
+    bool verbose = false;
 };
 
 void add_key(std::unordered_set<std::string>& keyset, const std::string& key) {
     if (key != "") {
         keyset.emplace(key);
     }
+}
+
+void add_key(std::unordered_set<std::string>& keyset, std::string&& key) {
+    if (key != "") {
+        keyset.emplace(std::move(key));
+    }
+}
+
+std::string truncate(std::string&& key) {
+    if (key.size() > MAX_VAL_LEN) {
+        return key.substr(0, MAX_VAL_LEN) + "...";
+    }
+    return key;
 }
 
 void print_usage() {
@@ -29,11 +44,21 @@ void compare_json(T data1, T data2, const std::string& prev_key,
                     std::unordered_set<std::string>& diff_keys, 
                     const config& options) {
     const bool only_compare_keys = options.only_compare_keys;
+    const bool verbose = options.verbose;
     if (only_compare_keys) {
         return;
     }
     if (data1 != data2) {
-        add_key(diff_keys, prev_key);
+        std::string key_copy = prev_key;
+        if (verbose) {
+            using decay_type = std::decay_t<T>;
+            if constexpr (std::is_same_v<std::string, decay_type> || std::is_same_v<T, const char*>) {
+                key_copy +=  "\t( " + truncate(std::move(data1)) + " ~ " + truncate(std::move(data2)) + ")";
+            } else {
+                key_copy += "\t(" + truncate(std::to_string(data1)) + " ~ " + truncate(std::to_string(data2)) + ")";
+            }
+        }
+        add_key(diff_keys, std::move(key_copy));
         return;
     }
 }
@@ -187,7 +212,7 @@ bool print_summary(const std::unordered_set<std::string>& data, const char* file
             std::cout << sign << std::endl;
         }
         for (const auto& key : data) {
-            std::cout << '\t' << key << std::endl;
+            std::cout << "*\t" << key << std::endl;
         }
         return true;
     }
@@ -197,6 +222,7 @@ bool print_summary(const std::unordered_set<std::string>& data, const char* file
 DEFINE_bool(array, false, "If file contains JSONArray.");
 DEFINE_bool(h, false, "Help information.");
 DEFINE_bool(k, false, "Only check if keys are the same, ignore values.");
+DEFINE_bool(v, false, "Verbose add diff value.");
 
 int main(int argc, char* argv[]) {
     google::ParseCommandLineFlags(&argc, &argv, true);
@@ -209,7 +235,10 @@ int main(int argc, char* argv[]) {
     std::unordered_set<std::string> keyset_1;
     std::unordered_set<std::string> keyset_2;
     std::unordered_set<std::string> diff_keys;
-    config options{.only_compare_keys = FLAGS_k};
+    config options{
+        .only_compare_keys = FLAGS_k, 
+        .verbose = FLAGS_v
+    };
     if (FLAGS_array) {
         const auto result = compare_json_array(f1, f2, keyset_1, keyset_2, diff_keys, options);
         if (result != 0) {
