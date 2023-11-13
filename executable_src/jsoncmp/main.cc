@@ -150,12 +150,12 @@ int compare_json_objects(const char* filename1, const char* filename2,
                             std::unordered_set<std::string>& keyset_2,
                             std::unordered_set<std::string>& diff_keys, 
                             const config& options) {
-    auto obj1 = wwc::JSONObject::parseFromFile(filename1);
+    auto obj1 = wwc::JSONObject::load(filename1);
     if (obj1 == nullptr) {
         std::cerr << filename1 << " is not json object" << std::endl;
         return 1;
     }
-    auto obj2 = wwc::JSONObject::parseFromFile(filename2);
+    auto obj2 = wwc::JSONObject::load(filename2);
     if (obj2 == nullptr) {
         std::cerr << filename2 << " is not json object" << std::endl;
         return 1;
@@ -169,12 +169,12 @@ int compare_json_array(const char* filename1, const char* filename2,
                         std::unordered_set<std::string>& keyset_2, 
                         std::unordered_set<std::string>& diff_keys,
                         const config& options) {
-    auto arr1 = wwc::JSONArray::parseFromFile(filename1);
+    auto arr1 = wwc::JSONArray::load(filename1);
     if (arr1 == nullptr) {
         std::cerr << filename1 << " is not json array" << std::endl;
         return 1;
     }
-    auto arr2 = wwc::JSONArray::parseFromFile(filename2);
+    auto arr2 = wwc::JSONArray::load(filename2);
     if (arr2 == nullptr) {
         std::cerr << filename2 << " is not json array" << std::endl;
         return 1;

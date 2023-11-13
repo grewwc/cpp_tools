@@ -76,12 +76,16 @@ namespace wwc {
         return result;
     }
 
-    shared_ptr<JSONObject> JSONObject::parseFromFile(const char* filename) {
+    shared_ptr<JSONObject> JSONObject::load(const char* filename) {
         string content = readTextFromFile(filename);
         if (content == "") {
             return nullptr;
         }
-        cJSON* data = cJSON_Parse(content.c_str());
+        return loads(content.c_str());
+    }
+
+    shared_ptr<JSONObject> JSONObject::loads(const char* content) {
+        cJSON* data = cJSON_Parse(content);
         const auto result = make_shared<JSONObject>(data, true);
         if (!result->valid_data()) {
             return nullptr;
@@ -90,18 +94,23 @@ namespace wwc {
     }
 
     // JSONArray
-    shared_ptr<JSONArray> JSONArray::parseFromFile(const char* filename) {
+    shared_ptr<JSONArray> JSONArray::load(const char* filename) {
         string content = readTextFromFile(filename);
         if (content == "") {
             return nullptr;
         }
-        cJSON* data = cJSON_Parse(content.c_str());
+        return loads(content.c_str());
+    }
+
+    shared_ptr<JSONArray> JSONArray::loads(const char* content) {
+        cJSON* data = cJSON_Parse(content);
         const auto result = make_shared<JSONArray>(data, true);
         if (!result->valid_data()) {
             return nullptr;
         }
         return result;
     }
+
     optional<int> JSONArray::getInt(size_t i) const {
         return getNumber<int, size_t>(data, i);
     }

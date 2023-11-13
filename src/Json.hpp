@@ -54,7 +54,8 @@ namespace wwc {
 
     class JSONObject {
     public:
-        static std::shared_ptr<JSONObject> parseFromFile(const char* filename);
+        static std::shared_ptr<JSONObject> load(const char* filename);
+        static std::shared_ptr<JSONObject> loads(const char* content);
 
     public:
         friend class JSONArray;
@@ -162,6 +163,10 @@ namespace wwc {
     // JSONARray
     class JSONArray {
     public:
+        static std::shared_ptr<JSONArray> load(const char* filename);
+        static std::shared_ptr<JSONArray> loads(const char* content);
+
+    public:
         explicit JSONArray() : data{cJSON_CreateArray()} {}
         explicit JSONArray(cJSON* data, bool is_root = false) : data{data}, is_root{is_root} {}
         ~JSONArray() {
@@ -169,7 +174,6 @@ namespace wwc {
                 cJSON_Delete(data);
             }
         }
-        static std::shared_ptr<JSONArray> parseFromFile(const char* filename);
         std::optional<int> getInt(std::size_t i) const;
         std::optional<long> getLong(std::size_t i) const;
         std::optional<double> getDouble(std::size_t i) const;
