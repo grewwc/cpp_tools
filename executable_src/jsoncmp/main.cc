@@ -33,6 +33,10 @@ std::string truncate(std::string&& key) {
     return key;
 }
 
+std::string join_key(const std::string& prev_key, const std::string& key) {
+    return prev_key != "" ? prev_key + "." + key : key;
+}
+
 void print_usage() {
     std::cout << "usage: jsoncmp ${file1} ${file2} -k true -array false" << std::endl;
 }
@@ -145,11 +149,11 @@ void compare_json<Ptr_JSONObject>(Ptr_JSONObject obj1, Ptr_JSONObject obj2, cons
     const auto key_set2 = obj2->keys();
     for (const std::string& key : key_set1) {
         if (key_set2.find(key) == key_set2.cend()) {
-            add_key(keyset_1, key);
+            add_key(keyset_1, join_key(prev_key, key));
             continue;
         }
         // found in key_set2
-        std::string temp_key = prev_key != "" ? prev_key + "." + key : key;
+        std::string temp_key = join_key(prev_key, key);
         compare_json(obj1->getBool(key.c_str()), obj2->getBool(key.c_str()), temp_key, keyset_1, keyset_2, diff_keys, options);
         compare_json(obj1->getDouble(key.c_str()), obj2->getDouble(key.c_str()), temp_key, keyset_1, keyset_2, diff_keys, options);
         compare_json(obj1->getInt(key.c_str()), obj2->getInt(key.c_str()), temp_key, keyset_1, keyset_2, diff_keys, options);
@@ -161,7 +165,7 @@ void compare_json<Ptr_JSONObject>(Ptr_JSONObject obj1, Ptr_JSONObject obj2, cons
     
     for (const std::string& key : key_set2) {
         if (key_set1.find(key) == key_set1.cend()) {
-            add_key(keyset_2, key);
+            add_key(keyset_2, join_key(prev_key, key));
         }
     }
 }
