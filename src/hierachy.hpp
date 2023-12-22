@@ -1,6 +1,5 @@
 #pragma once
 #include <mutex>
-
 namespace wwc {
 
     class hierachy_mutex {

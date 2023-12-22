@@ -12,12 +12,12 @@ namespace wwc {
     }
 
     void hierachy_mutex::lock() {
-        mu_.lock();
         if (!check()) {
             std::stringstream ss;
             ss << "hieracy(" << curr_thread_value_ << ") is locked, unable to lock(" << value_ << ")";
             throw std::logic_error(ss.str());
         }
+        mu_.lock();
         prev_value_ = curr_thread_value_;
         curr_thread_value_ = value_;
     }
@@ -28,10 +28,10 @@ namespace wwc {
     }
 
     bool hierachy_mutex::try_lock() {
-        if (!mu_.try_lock()) {
+        if (!check()) {
             return false;
         }
-        if (!check()) {
+        if (!mu_.try_lock()) {
             return false;
         }
         prev_value_ = curr_thread_value_;
