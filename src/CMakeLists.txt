@@ -1,4 +1,4 @@
-file(GLOB SRC_SOURCE ./*.cc)
+file(GLOB SRC_SOURCE ./*.cpp)
 file(GLOB SRC_HEADER 
     Json.hpp
     fileutils.hpp

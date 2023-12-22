@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "src/types.hpp"
+#include "src/hierachy.hpp"
 
 namespace wwc {
     template <typename T>
