@@ -23,6 +23,11 @@ namespace wwc {
     }
 
     void hierachy_mutex::unlock() {
+        if (curr_thread_value_ != value_) {
+            std::stringstream ss;
+            ss << "curr_thread_value != value (" << curr_thread_value_ << "!=" << value_;
+            throw std::logic_error(ss.str());
+        }
         curr_thread_value_ = prev_value_;
         mu_.unlock();
     }
