@@ -6,9 +6,11 @@ file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
 
 file(GLOB CJSON_HEADERS cJSON/*.h)
 file(GLOB CJSON_SOURCES cJSON/*.c)
+file(GLOB THREAD_POOL_HEADERS thread-pool/include/*.hpp)
 
 message("copy cjson file")
 file(COPY ${CJSON_HEADERS} DESTINATION ${CMAKE_SOURCE_DIR}/include)
+file(COPY ${THREAD_POOL_HEADERS} DESTINATION ${CMAKE_SOURCE_DIR}/include)
 
 file(GLOB GLOG_SOURCES 
     glog/src/utilities.cc

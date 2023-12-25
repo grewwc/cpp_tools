@@ -33,5 +33,5 @@ namespace wwc {
         ((std::cout << ", " << "[" << std::forward<Args>(args) << "]"), ...);
         std::cout << std::endl;
     }
-
+    
 }  // namespace wwc
