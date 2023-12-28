@@ -14,6 +14,7 @@ namespace wwc {
         if (running_) {
             return false;
         }
+        running_ = true;
         return true;
     }
 
@@ -28,6 +29,9 @@ namespace wwc {
     }
 
     auto stopwatch::tell() const noexcept {
+        if (running_) {
+            return passed_ + (now() - prev_);
+        }
         return passed_;
     }
 
