@@ -14,6 +14,7 @@ namespace wwc {
         auto now() const noexcept {
             return std::chrono::steady_clock::now();
         }
+        void reset() noexcept;
         bool start() noexcept;
         bool stop() noexcept;
         bool is_running() const noexcept {
@@ -26,6 +27,7 @@ namespace wwc {
         
       private:
         std::chrono::time_point<std::chrono::steady_clock, std::chrono::nanoseconds> prev_;
+        std::chrono::nanoseconds passed_ {0};
         bool running_ = false;
     };
 }  // namespace wwc

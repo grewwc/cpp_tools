@@ -2,14 +2,18 @@
 
 namespace wwc {
 
-    stopwatch::stopwatch(bool start) : prev_{now()}, running_{start} {}
+    stopwatch::stopwatch(bool start) : running_{start}, prev_{now()} {}
+
+    void stopwatch::reset() noexcept {
+        running_ = false;
+        prev_ = now();
+        passed_ = std::chrono::nanoseconds{0};
+    }
 
     bool stopwatch::start() noexcept {
         if (running_) {
             return false;
         }
-        running_ = true;
-        prev_ = now();
         return true;
     }
 
@@ -18,10 +22,13 @@ namespace wwc {
             return false;
         }
         running_ = false;
+        passed_ += (now() - prev_);
+        prev_ = now();
+        return true;
     }
 
     auto stopwatch::tell() const noexcept {
-        return now() - prev_;
+        return passed_;
     }
 
     unsigned long stopwatch::tell_secs() const noexcept {
