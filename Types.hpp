@@ -5,7 +5,6 @@
 #include "src/types.hpp"
 #include "src/hierachy_mutex.hpp"
 #include "include/BS_thread_pool.hpp"
-#include "include/BS_thread_pool_light.hpp"
 #include "src/stopwatch.hpp"
 
 namespace wwc {
