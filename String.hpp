@@ -21,8 +21,7 @@ namespace wwc {
 
         String(const String &other) noexcept : std::string{other} {};
 
-        String(String &&other) noexcept
-            : std::string(std::move(static_cast<std::string>(other))) {}
+        String(String &&other) noexcept : std::string(std::move(static_cast<std::string>(other))) {}
 
         String(const char *s) noexcept : std::string{s} {}
 
@@ -72,6 +71,13 @@ namespace wwc {
         String &strip(char ch = ' ') noexcept {
             lstrip(ch);
             rstrip(ch);
+            return *this;
+        }
+
+        String &strip_prefix(std::string prefix) noexcept {
+            if (startsWith(prefix)) {
+                this->erase(0, prefix.size());
+            }
             return *this;
         }
 
@@ -155,13 +161,9 @@ namespace wwc {
             return res;
         }
 
-        std::vector<long> find_all_long() const noexcept {
-            return find_all_number<long>('l');
-        }
+        std::vector<long> find_all_long() const noexcept { return find_all_number<long>('l'); }
 
-        std::vector<double> find_all_double() const noexcept {
-            return find_all_number<double>('d');
-        }
+        std::vector<double> find_all_double() const noexcept { return find_all_number<double>('d'); }
 
         std::vector<std::size_t> find_all(const char *data) const noexcept {
             const auto DATA_LEN = strlen(data);
@@ -177,9 +179,7 @@ namespace wwc {
             return res;
         }
 
-        std::size_t count(char ch) const noexcept {
-            return std::count(cbegin(), cend(), ch);
-        }
+        std::size_t count(char ch) const noexcept { return std::count(cbegin(), cend(), ch); }
 
         String toLower_copy() const noexcept {
             String res = *this;
@@ -255,23 +255,15 @@ namespace wwc {
             return true;
         }
 
-        bool startsWith(const String &begin) const noexcept {
-            return this->startsWith(static_cast<std::string>(begin));
-        }
-        bool endsWith(const String &end) const noexcept {
-            return this->endsWith(static_cast<std::string>(end));
-        }
+        bool startsWith(const String &begin) const noexcept { return this->startsWith(static_cast<std::string>(begin)); }
+        bool endsWith(const String &end) const noexcept { return this->endsWith(static_cast<std::string>(end)); }
 
         // bool startsWith(const char *begin) const noexcept;
         // bool endsWith(const char *end) const noexcept;
 
-        bool contains(const char *sub) const noexcept {
-            return strstr(data(), sub);
-        }
+        bool contains(const char *sub) const noexcept { return strstr(data(), sub); }
 
-        bool contains(const std::string &sub) const noexcept {
-            return contains(sub.data());
-        }
+        bool contains(const std::string &sub) const noexcept { return contains(sub.data()); }
 
         String operator*(const size_t N) const noexcept {
             String res;
@@ -282,13 +274,10 @@ namespace wwc {
             }
             return res;
         }
-        friend String operator*(const size_t N, const String &ws) {
-            return ws * N;
-        }
+        friend String operator*(const size_t N, const String &ws) { return ws * N; }
         void operator*=(const size_t N) noexcept { *this = (*this) * N; }
 
-        String replace_substr(const char *old,
-                              const char *new_) const noexcept {
+        String replace_substr(const char *old, const char *new_) const noexcept {
             String copy = *this;
             auto positions = copy.find_all(old);
             const int old_len = strlen(old);
@@ -297,15 +286,13 @@ namespace wwc {
                 int position = positions[i];
                 // std::cout << "here " << position << std::endl;
                 position += i * (new_len - old_len);
-                copy.replace(copy.begin() + position,
-                             copy.begin() + position + old_len, new_);
+                copy.replace(copy.begin() + position, copy.begin() + position + old_len, new_);
             }
             return copy;
         }
 
         String replace_char(char old, char new_) const noexcept {
-            return replace_char_fn_copy(
-                [old, new_](char ch) { return ch == old ? new_ : ch; });
+            return replace_char_fn_copy([old, new_](char ch) { return ch == old ? new_ : ch; });
         }
 
         template <typename T>
@@ -313,13 +300,11 @@ namespace wwc {
             using raw_type = std::decay_t<decltype(val)>;
             constexpr bool is_char = std::is_same_v<char, raw_type>;
             constexpr bool is_integer = std::is_integral_v<raw_type>;
-            constexpr bool is_floating_point =
-                std::is_floating_point_v<raw_type>;
+            constexpr bool is_floating_point = std::is_floating_point_v<raw_type>;
             if constexpr (is_floating_point && !is_char) {
                 std::string temp_result = std::to_string(val);
                 // remove trailing 0
-                temp_result.erase(temp_result.find_last_not_of('0') + 1,
-                                  std::string::npos);
+                temp_result.erase(temp_result.find_last_not_of('0') + 1, std::string::npos);
                 std::string::operator+=(std::move(temp_result));
             } else if constexpr (is_integer && !is_char) {
                 std::string::operator+=(std::to_string(val));
@@ -334,8 +319,7 @@ namespace wwc {
         template <typename T>
         std::vector<T> find_all_number(char type) const noexcept {
             const auto &fn = [](char ch) {
-                if (!isdigit(ch) && ch != '.' && ch != 'e' && ch != '+' && ch != '-')
-                    return ' ';
+                if (!isdigit(ch) && ch != '.' && ch != 'e' && ch != '+' && ch != '-') return ' ';
                 return ch;
             };
 
@@ -363,8 +347,7 @@ namespace wwc {
             return res;
         }
 
-        String replace_char_fn_copy(
-            const std::function<char(char)> &func) const noexcept {
+        String replace_char_fn_copy(const std::function<char(char)> &func) const noexcept {
             String res;
             res.resize(this->size());
             std::transform(cbegin(), cend(), res.begin(), func);

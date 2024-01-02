@@ -6,6 +6,7 @@
 #include "src/hierachy_mutex.hpp"
 #include "include/BS_thread_pool.hpp"
 #include "src/stopwatch.hpp"
+#include "src/files.hpp"
 
 namespace wwc {
     template <typename T>
