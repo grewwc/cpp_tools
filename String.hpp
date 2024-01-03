@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "src/download_utils.hpp"
+
 namespace wwc {
     class String : public std::string {
     public:
@@ -313,6 +315,24 @@ namespace wwc {
             }
 
             return *this;
+        }
+
+        std::optional<String> download_url() const {
+            String result;
+            if (!wwc::download_url(this->c_str(), result)) {
+                return {};
+            }
+            return result;
+        }
+
+        bool write_to_file(const char *filename, const char *mode = "w") const {
+            FILE *f = fopen(filename, mode);
+            if (f == nullptr) {
+                return false;
+            }
+            fwrite(this->c_str(), this->size(), 1, f);
+            fclose(f);
+            return true;
         }
 
     private:

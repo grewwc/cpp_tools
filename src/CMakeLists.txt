@@ -1,7 +1,6 @@
 file(GLOB SRC_SOURCE ./*.cpp)
 file(GLOB SRC_HEADER 
     Json.hpp
-    fileutils.hpp
 )
 target_sources(cpp_tools PRIVATE
     ${SRC_SOURCE}

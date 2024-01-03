@@ -1,6 +1,7 @@
 
 add_subdirectory(gflags)
 add_subdirectory(cJson)
+add_subdirectory(curl-master)
 
 file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
 
