@@ -7,7 +7,7 @@
 #include "include/BS_thread_pool.hpp"
 #include "src/stopwatch.hpp"
 #include "src/files.hpp"
-
+#include "src/uf.hpp"
 namespace wwc {
     template <typename T>
     class MinHeap : public __helper::_Heap<T> {
