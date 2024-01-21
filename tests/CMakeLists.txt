@@ -16,6 +16,8 @@ add_executable(
     ${SOURCES}
 )
 
+include_directories(${CMAKE_SOURCE_DIR})
+message(STATUS "here==> ${CMAKE_SOURCE_DIR}")
 target_link_libraries(
     all_test
     GTest::gtest_main

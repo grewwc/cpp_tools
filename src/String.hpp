@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "src/download_utils.hpp"
+#include "download_utils.hpp"
 
 namespace wwc {
     class String : public std::string {
@@ -356,7 +356,7 @@ namespace wwc {
                     default: printf("unknow type %c\n", type); goto end;
                 }
                 if (errno == ERANGE) {
-                    fprintf(stderr, "range error (%s --> long)\n");
+                    fprintf(stderr, "range error\n");
                     errno = 0;
                 }
                 if (beg == end) break;

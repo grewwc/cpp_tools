@@ -8,7 +8,7 @@ namespace __helper
     class _Heap
     {
     public:
-        _Heap(int sz = 16)
+        _Heap(std::size_t sz = 16)
             : sz{0}, cap{sz},
               data{std::unique_ptr<T[], void (*)(T *)>((T *)malloc(cap * sizeof(T)), [](T *p) { free(p); })}
         {

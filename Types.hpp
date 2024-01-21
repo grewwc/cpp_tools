@@ -12,7 +12,7 @@ namespace wwc {
     template <typename T>
     class MinHeap : public __helper::_Heap<T> {
     public:
-        explicit MinHeap(int sz = 16) : __helper::_Heap<T>{sz} {}
+        explicit MinHeap(std::size_t sz = 16) : __helper::_Heap<T>{sz} {}
 
     private:
         virtual bool less(const T &val1, const T &val2) const override {
@@ -23,7 +23,7 @@ namespace wwc {
     template <typename T>
     class MaxHeap : public __helper::_Heap<T> {
     public:
-        explicit MaxHeap(int sz = 16) : __helper::_Heap<T>{sz} {}
+        explicit MaxHeap(std::size_t sz = 16) : __helper::_Heap<T>{sz} {}
 
     private:
         virtual bool less(const T &val1, const T &val2) const override {
