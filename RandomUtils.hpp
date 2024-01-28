@@ -7,6 +7,9 @@ static std::random_device __device;
 
 namespace wwc {
     template <typename T, unsigned N>
+    /**
+     generate number from [min, max]
+    */
     std::vector<T> uniform_gen(T min, T max) {
         std::mt19937 __generator(__device());
         std::vector<T> result(N);
