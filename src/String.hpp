@@ -7,10 +7,11 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <algorithm>
+
 #include "download_utils.hpp"
 
 namespace wwc {
@@ -104,7 +105,7 @@ namespace wwc {
         }
 
         void from_file(const char *filename) {
-            const char* full_filename = filename = expanduser(filename).c_str();
+            const char *full_filename = filename = expanduser(filename).c_str();
             std::ifstream in{full_filename};
             if (!in) {
                 perror("failed to open file");
@@ -113,6 +114,12 @@ namespace wwc {
             std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), std::back_inserter(*this));
             in.close();
         }
+
+        String plus(const String &other) const noexcept {
+            return string_mul(*this, other);
+        }
+
+        String operator*(const String &other) const noexcept { return string_mul(*this, other); }
 
         std::vector<String> split(char ch = ' ') const noexcept {
             std::vector<String> result;
@@ -131,6 +138,23 @@ namespace wwc {
             }
             if (!word.empty()) result.emplace_back(std::move(word));
             return result;
+        }
+
+        bool is_integer() const noexcept {
+            if (size() == 0) {
+                return false;
+            }
+            const char c1 = (*this)[0];
+            if (c1 != '+' && c1 != '-' && !isdigit(c1)) {
+                return false;
+            }
+            for (int i = 1; i < size(); i++) {
+                const char ch = (*this)[i];
+                if (!isdigit(ch)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         template <typename Container>
@@ -446,14 +470,98 @@ namespace wwc {
             }
             return j == sub.size() ? i - sub.size() : -1;
         }
-        
-        std::string expanduser(const char *path) const noexcept {
+
+        static std::string expanduser(const char *path) noexcept {
             const char *home = std::getenv("HOME");
             if (home == nullptr) {
                 return path;
             }
             String s{path};
             return s.replace_substr("~", home);
+        }
+
+        static String string_mul(const String &left, const String &right) {
+            if (left == "0" || right == "0") {
+                return "0";
+            }
+            if (!left.is_integer() || !right.is_integer()) {
+                return "";
+            }
+            // check sign
+            bool minus = (left[0] == '-' && right[0] != '-') || (left[0] != '-' && right[0] == '-');
+            String s1 = left.lstrip_copy('0');
+            String s2 = right.lstrip_copy('0');
+            s1.strip('-').strip('+');
+            s2.strip('-').strip('+');
+            const auto l1 = s1.size();
+            const auto l2 = s2.size();
+            if (l1 == 0 || l2 == 0) {
+                return "";
+            }
+            std::vector<int> result(l1 + l2 + 1, 0);
+            std::vector<int> overflow(l1 + l2 + 1, 0);
+            for (size_t j = 0; j < l2; j++) {
+                for (size_t i = 0; i < l1; i++) {
+                    int val = (s1[l1 - 1 - i] - '0') * (s2[l2 - 1 - j] - '0') + overflow[i + j] + result[i + j];
+                    overflow[i + j] = 0;
+                    if (val >= 10) {
+                        overflow[i + j + 1] += val / 10;
+                        if (overflow[i + j + 1] >= 10) {
+                            overflow[i + j + 2] += overflow[i + j + 1] / 10;
+                            overflow[i + j + 1] %= 10;
+                        }
+                        val %= 10;
+                    }
+                    result[i + j] = val;
+                }
+            }
+            for (std::size_t i = 0; i < result.size() - 1; i++) {
+                result[i] += overflow[i];
+                if (result[i] >= 10) {
+                    result[i + 1] += result[i] / 10;
+                    result[i] %= 10;
+                }
+            }
+            std::reverse(result.begin(), result.end());
+
+            String s;
+            s.reserve(result.size());
+            std::transform(result.cbegin(), result.cend(), std::back_inserter(s), [](int val) -> char { return (char)(val + '0'); });
+            s.lstrip('0');
+            if (minus) {
+                return String("-") + s;
+            }
+            return s;
+        }
+
+        static String string_plus(const String &left, const String &right) {
+            String s1 = left.lstrip_copy('0');
+            String s2 = right.lstrip_copy('0');
+            if (s1.size() < s2.size()) {
+                std::swap(s1, s2);
+            }
+            const auto l1 = s1.size();
+            const auto l2 = s2.size();
+            if (l1 == 0 || l2 == 0) {
+                return "";
+            }
+            int overflow = 0;
+            std::vector<int> result(l1 + 1, 0);
+            for (int i = 0; i < l1; i++) {
+                int val = left[l1 - 1 - i] + right[l2 - 1 - i] + overflow;
+                overflow = 0;
+                if (val >= 10) {
+                    overflow = val / 10;
+                    val /= 10;
+                }
+                result[i] = val;
+            }
+            result[l1] += overflow;
+            std::reverse(result.begin(), result.end());
+            String s;
+            s.reserve(l1 + 1);
+            std::transform(s.cbegin(), s.cend(), std::back_inserter(s), [](int val) { return (char)(val + '0'); });
+            return s.lstrip('0');
         }
     };
 }  // namespace wwc
