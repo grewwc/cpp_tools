@@ -4,15 +4,17 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include <algorithm>
 #include "download_utils.hpp"
 
 namespace wwc {
+
     class String : public std::string {
     public:
         String() = default;
@@ -101,6 +103,17 @@ namespace wwc {
             return res;
         }
 
+        void from_file(const char *filename) {
+            const char* full_filename = filename = expanduser(filename).c_str();
+            std::ifstream in{full_filename};
+            if (!in) {
+                perror("failed to open file");
+                return;
+            }
+            std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), std::back_inserter(*this));
+            in.close();
+        }
+
         std::vector<String> split(char ch = ' ') const noexcept {
             std::vector<String> result;
             const auto N = size();
@@ -143,7 +156,9 @@ namespace wwc {
             }
             return res;
         }
+
         int to_int() const noexcept { return static_cast<int>(to_long()); }
+
         long to_long() const noexcept {
             char *end;
             auto res = std::strtod(c_str(), &end);
@@ -153,6 +168,7 @@ namespace wwc {
             }
             return res;
         }
+
         float to_float() const noexcept {
             char *end;
             auto res = std::strtof(c_str(), &end);
@@ -179,6 +195,20 @@ namespace wwc {
                 last_idx = pos + DATA_LEN;
             }
             return res;
+        }
+
+        std::vector<int> find_all_substr(const std::string &sub, std::size_t begin = 0) const noexcept {
+            std::vector<int> result;
+            int idx = -1;
+            while (true) {
+                idx = kmp(*this, sub, begin);
+                if (idx == -1) {
+                    break;
+                }
+                result.push_back(idx);
+                begin = static_cast<std::size_t>(idx + sub.size());
+            }
+            return result;
         }
 
         std::size_t count(char ch) const noexcept { return std::count(cbegin(), cend(), ch); }
@@ -372,6 +402,58 @@ namespace wwc {
             res.resize(this->size());
             std::transform(cbegin(), cend(), res.begin(), func);
             return res;
+        }
+
+        static std::vector<int> get_kmp_prefix_array(const std::string &t) noexcept {
+            std::vector<int> prefix(t.size(), -1);
+            for (int j = 2; j < t.size(); j++) {
+                int k = prefix[j - 1];
+                if (k == -1) {
+                    prefix[j] = (t[0] == t[j - 1]) ? 1 : -1;
+                } else {
+                    if (t[k] == t[j - 1]) {
+                        prefix[j] = k + 1;
+                    } else {
+                        int kk = k;
+                        while (kk != -1) {
+                            kk = prefix[kk];
+                            if (kk == -1) {
+                                prefix[j] = (t[0] == t[j - 1]) ? 1 : -1;
+                            } else if (t[kk] == t[j - 1]) {
+                                prefix[j] = kk + 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return prefix;
+        }
+
+        static int kmp(const std::string &s, const std::string &sub, std::size_t begin) noexcept {
+            std::vector<int> next = get_kmp_prefix_array(sub);
+            std::size_t i = begin, j = 0;
+            while (i < s.size() && j < sub.size()) {
+                if (s[i] == sub[j]) {
+                    i++, j++;
+                } else {
+                    j = next[j];
+                    if (j == -1) {
+                        i++;
+                        j = 0;
+                    }
+                }
+            }
+            return j == sub.size() ? i - sub.size() : -1;
+        }
+        
+        std::string expanduser(const char *path) const noexcept {
+            const char *home = std::getenv("HOME");
+            if (home == nullptr) {
+                return path;
+            }
+            String s{path};
+            return s.replace_substr("~", home);
         }
     };
 }  // namespace wwc
