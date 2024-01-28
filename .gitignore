@@ -2,5 +2,6 @@
 main.cpp
 .vscode
 build
-lib
+Windows
 bin
+/lib
