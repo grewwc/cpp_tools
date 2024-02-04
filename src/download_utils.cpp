@@ -1,4 +1,5 @@
 #include "download_utils.hpp"
+#include <mutex>
 
 size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb, void* userp) {
     size_t realsize = size * nmemb;
