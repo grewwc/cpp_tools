@@ -1,9 +1,10 @@
 # GoogleTest requires at least C++14
 
 include(FetchContent)
+message(STATUS ${CMAKE_SOURCE_DIR}/thirdparty/googletest)
 FetchContent_Declare(
     googletest
-    SOURCE ${CMAKE_SOURCE_DIR}/thirdparty/googletest
+    URL ${CMAKE_SOURCE_DIR}/thirdparty/googletest
     GIT_TAG v1.14.0
 )
 FetchContent_MakeAvailable(googletest)
