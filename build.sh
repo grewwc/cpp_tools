@@ -10,7 +10,6 @@ while getopts :b: OPT; do
 
 done 
 
-echo "here ==> $cmd"
 
 echo "building project..."
 

@@ -3,32 +3,32 @@ add_subdirectory(gflags)
 # add_subdirectory(cJson)
 add_subdirectory(curl-master)
 
-file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
+# file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
 
 file(GLOB CJSON_HEADERS cJSON/*.h)
-file(GLOB CJSON_SOURCES cJSON/*.c)
+# file(GLOB CJSON_SOURCES cJSON/*.c)
 file(GLOB THREAD_POOL_HEADERS thread-pool/include/BS_thread_pool.hpp)
 
 message("copy cjson file")
 file(COPY ${CJSON_HEADERS} DESTINATION ${CMAKE_SOURCE_DIR}/include)
 file(COPY ${THREAD_POOL_HEADERS} DESTINATION ${CMAKE_SOURCE_DIR}/include)
 
-file(GLOB GLOG_SOURCES 
-    glog/src/utilities.cc
-    glog/src/symbolize.cc 
-    glog/src/demangle.cc
-    glog/src/logging.cc
-    glog/src/raw_logging.cc
-    glog/src/signalhandler.cc
-    glog/src/vlog_is_on.cc
-    glog/src/dangle.cc
-)
+# file(GLOB GLOG_SOURCES 
+#     glog/src/utilities.cc
+#     glog/src/symbolize.cc 
+#     glog/src/demangle.cc
+#     glog/src/logging.cc
+#     glog/src/raw_logging.cc
+#     glog/src/signalhandler.cc
+#     glog/src/vlog_is_on.cc
+#     glog/src/dangle.cc
+# )
 
-target_sources(cpp_tools PRIVATE 
-    ${GFLAGS_SOURCES}
-    ${GLOG_SOURCES}
-    ${CJSON_SOURCES}
-)
+# target_sources(cpp_tools PRIVATE 
+#     ${GFLAGS_SOURCES}
+#     ${GLOG_SOURCES}
+#     ${CJSON_SOURCES}
+# )
 
 find_package(Threads REQUIRED)
 include_directories(cpp_tools  ${Threads_INCLUDE_DIRS})
