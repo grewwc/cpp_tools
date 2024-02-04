@@ -50,7 +50,7 @@
 #  include <sys/stat.h> // for mkdir
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__unix__)
 #include <sys/stat.h>
 #endif
 
