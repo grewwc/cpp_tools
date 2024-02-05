@@ -116,10 +116,23 @@ namespace wwc {
         }
 
         String plus(const String &other) const noexcept {
+            if (!is_integer() || !other.is_integer()) {
+                return "";
+            }
+            return string_plus(*this, other);
+        }
+        String operator-(const String &other) const noexcept {
+            if (!is_integer() || !other.is_integer()) {
+                return "";
+            }
+            return string_minus(*this, other);
+        }
+        String operator*(const String &other) const noexcept {
+            if (!is_integer() || !other.is_integer()) {
+                return "";
+            }
             return string_mul(*this, other);
         }
-
-        String operator*(const String &other) const noexcept { return string_mul(*this, other); }
 
         std::vector<String> split(char ch = ' ') const noexcept {
             std::vector<String> result;
@@ -481,18 +494,15 @@ namespace wwc {
         }
 
         static String string_mul(const String &left, const String &right) {
-            if (left == "0" || right == "0") {
+            String s1 = left.lstrip_copy('+');
+            String s2 = right.lstrip_copy('+');
+            if (s1 == "0" || s2 == "0") {
                 return "0";
-            }
-            if (!left.is_integer() || !right.is_integer()) {
-                return "";
             }
             // check sign
             bool minus = (left[0] == '-' && right[0] != '-') || (left[0] != '-' && right[0] == '-');
-            String s1 = left.lstrip_copy('0');
-            String s2 = right.lstrip_copy('0');
-            s1.strip('-').strip('+');
-            s2.strip('-').strip('+');
+            s1 = s1.lstrip('-').lstrip('0');
+            s2 = s2.lstrip('-').lstrip('0');
             const auto l1 = s1.size();
             const auto l2 = s2.size();
             if (l1 == 0 || l2 == 0) {
@@ -535,8 +545,22 @@ namespace wwc {
         }
 
         static String string_plus(const String &left, const String &right) {
-            String s1 = left.lstrip_copy('0');
-            String s2 = right.lstrip_copy('0');
+            String s1 = left.lstrip_copy('+');
+            String s2 = right.lstrip_copy('+');
+
+            // both minus
+            if (s1[0] == '-' && s2[0] == '-') {
+                return String("-") + string_plus(s1.substr(1, s1.size() - 1), s2.substr(1, s2.size() - 1));
+            }
+            // one plus, one minus
+            if (s1[0] == '-' && s2[0] != '-') {
+                return String("-") + string_minus(s1.substr(1, s1.size() - 1), s2);
+            }
+            if (s1[0] != '-' && s2[0] == '-') {
+                return string_minus(s1, s2.substr(1, s2.size() - 1));
+            }
+            s1 = s1.lstrip('0');
+            s2 = s2.lstrip('0');
             if (s1.size() < s2.size()) {
                 std::swap(s1, s2);
             }
@@ -547,21 +571,99 @@ namespace wwc {
             }
             int overflow = 0;
             std::vector<int> result(l1 + 1, 0);
-            for (int i = 0; i < l1; i++) {
-                int val = left[l1 - 1 - i] + right[l2 - 1 - i] + overflow;
+            for (std::size_t i = 0; i < l1; i++) {
+                const int right_val = (i >= l2) ? 0 : (s2[l2 - 1 - i] - '0');
+                int val = (s1[l1 - 1 - i] - '0') + right_val + overflow;
                 overflow = 0;
                 if (val >= 10) {
                     overflow = val / 10;
-                    val /= 10;
+                    val %= 10;
                 }
                 result[i] = val;
             }
-            result[l1] += overflow;
+            result[l1] = overflow;
+#if 0
+            for(auto e : result) {
+                std::cout << e << ",";
+            }
+            std::cout << std::endl;
+#endif
             std::reverse(result.begin(), result.end());
             String s;
             s.reserve(l1 + 1);
-            std::transform(s.cbegin(), s.cend(), std::back_inserter(s), [](int val) { return (char)(val + '0'); });
+            std::transform(result.cbegin(), result.cend(), std::back_inserter(s), [](int val) { return (char)(val + '0'); });
+            if (s.size() == 1 && s[0] == '0') {
+                return s;
+            }
             return s.lstrip('0');
+        }
+
+        static String string_minus(const String &left, const String &right) {
+            int swapped = 0;
+            String s1 = left.lstrip_copy('+');
+            String s2 = right.lstrip_copy('+');
+            // left > 0, right < 0
+            if (left[0] != '-' && right[0] == '-') {
+                return string_plus(left, right.substr(1, right.size() - 1));
+            }
+            // left < 0, right > 0
+            if (left[0] == '-' && right[0] != '-') {
+                return String("-") + string_plus(left.substr(1, left.size() - 1), right);
+            }
+            // both minus
+            if (s1[0] == '-' && s2[0] == '-') {
+                swapped++;
+            }
+            s1 = s1.lstrip('-').lstrip('0');
+            s2 = s2.lstrip('-').lstrip('0');
+            if (s1.size() < s2.size()) {
+                std::swap(s1, s2);
+                swapped++;
+            }
+            if (s1.size() == s2.size() && s1 < s2) {
+                std::swap(s1, s2);
+                swapped++;
+            }
+            const auto l1 = s1.size();
+            const auto l2 = s2.size();
+            if (l1 == 0 || l2 == 0) {
+                return "0";
+            }
+            std::vector<int> result(l1, 0);
+            int owed = 0;
+            for (std::size_t i = 0; i < l1; i++) {
+                const int right_val = (i >= l2) ? 0 : s2[l2 - 1 - i] - '0';
+                const int left_val = s1[l1 - 1 - i] - owed - '0';
+                int val = left_val - right_val;
+                if (val < 0) {
+                    owed = 1;
+                    val += 10;
+                } else {
+                    owed = 0;
+                }
+                result[i] = val;
+            }
+#if 0
+            for (auto e : result) {
+                std::cout << e << ",";
+            }
+            std::cout << std::endl;
+#endif
+            String s;
+            s.resize(result.size());
+            std::reverse(result.begin(), result.end());
+            std::transform(result.cbegin(), result.cend(), s.begin(), [](int val) { return (char)(val + '0'); });
+            if (s.size() == 1 && s[0] == '0') {
+                return s;
+            }
+            s = s.lstrip('0');
+            if (s.empty()) {
+                return "0";
+            }
+            if (swapped % 2 == 1) {
+                return String("-") + s;
+            }
+            return s;
         }
     };
 }  // namespace wwc
