@@ -13,14 +13,14 @@ namespace __helper
               data{std::unique_ptr<T[], void (*)(T *)>((T *)malloc(cap * sizeof(T)), [](T *p) { free(p); })}
         {
         }
-        bool insert(const T &val)
+        bool insert(T val)
         {
             if (sz + 1 == cap)
             {
                 cap *= 2;
                 resize(cap);
             }
-            data[++sz] = val;
+            data[++sz] = std::move(val);
             swim(sz, 1);
             return true;
         }
@@ -37,7 +37,7 @@ namespace __helper
             {
                 return std::nullopt;
             }
-            const T &result = data[1];
+            T result = data[1];
             std::swap(data[1], data[sz--]);
             sink(1, sz + 1);
             if (sz * 2 < cap)
