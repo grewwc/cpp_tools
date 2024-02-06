@@ -8,7 +8,8 @@ flag=""
 
 while getopts :V OPT; do 
     case "$OPT" in 
-        V) flag="-V"
+        V) flag="-VV"
+            echo "verbose mode"
             ;;
         \?) echo "unknown flag"
             exit -1
@@ -16,7 +17,7 @@ while getopts :V OPT; do
     esac
 done
 
-cmd="ctest $flag --gtest_filter=STRING_TEST.string_plus"
+cmd="ctest $flag"
 
 cd build/tests && $cmd 
 cd $cur_dir
