@@ -105,7 +105,8 @@ namespace wwc {
         }
 
         void from_file(const char *filename) {
-            const char *full_filename = filename = expanduser(filename).c_str();
+            auto filename_str = expanduser(filename);
+            const char* full_filename = filename_str.c_str();
             std::ifstream in{full_filename};
             if (!in) {
                 perror("failed to open file");
