@@ -326,9 +326,6 @@ namespace wwc {
             return true;
         }
 
-        bool startsWith(const String &begin) const noexcept { return this->startsWith(static_cast<std::string>(begin)); }
-        bool endsWith(const String &end) const noexcept { return this->endsWith(static_cast<std::string>(end)); }
-
         // bool startsWith(const char *begin) const noexcept;
         // bool endsWith(const char *end) const noexcept;
 
