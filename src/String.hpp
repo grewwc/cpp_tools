@@ -112,6 +112,7 @@ namespace wwc {
                 perror("failed to open file");
                 return;
             }
+            this->clear();
             std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), std::back_inserter(*this));
             in.close();
         }
