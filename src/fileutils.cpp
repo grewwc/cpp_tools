@@ -48,10 +48,9 @@ namespace wwc {
     }
 
     bool is_dir(const char* path) {
-        const auto s = expanduser(path);
-        path = s.c_str();
         struct stat buf;
-        if (stat(path, &buf) != 0) {
+        std::string p = expanduser(path);
+        if (stat(p.c_str(), &buf) != 0) {
             perror("error");
             return false;
         }
@@ -59,25 +58,28 @@ namespace wwc {
     }
 
     bool is_regular(const char* path) {
-        path = expanduser(path).c_str();
         struct stat buf;
-        if (stat(path, &buf) != 0) {
+        std::string p = expanduser(path);
+        if (stat(p.c_str(), &buf) != 0) {
             return false;
         }
         return S_ISREG(buf.st_mode);
     }
 
     bool exists(const char* path) {
-        path = expanduser(path).c_str();
         struct stat buf;
-        return stat(path, &buf) != 0;
+        std::string p = expanduser(path);
+        return stat(p.c_str(), &buf) != 0;
     }
 
     std::vector<std::string> ls_dir(const char* dir_name) {
-        dir_name = expanduser(dir_name).c_str();
+        const wwc::String expand_result = expanduser(dir_name);
+        dir_name = expand_result.c_str();
         DIR* dir = opendir(dir_name);
         if (dir == nullptr) {
-            perror("Cannot open dir");
+            char buf[100];
+            snprintf(buf, sizeof(buf), "Can't open dir: %s", dir_name);
+            perror(buf);
             return {};
         }
         dirent* ent = nullptr;

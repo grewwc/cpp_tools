@@ -1,24 +1,25 @@
 #include "files.hpp"
-#include <iostream>
-#include "fileutils.hpp"
 
+#include <iostream>
+
+#include "fileutils.hpp"
 
 namespace wwc {
     file::file(const char* name) : name_{name} {}
 
     bool file::is_dir() const noexcept {
-        return wwc::is_dir(absolute_path().c_str());
+        return wwc::is_dir(name_.c_str());
     }
 
     bool file::is_regular() const noexcept {
-        return wwc::is_regular(absolute_path().c_str());
+        return wwc::is_regular(name_.c_str());
     }
 
     bool file::exists() const noexcept {
-        return wwc::exists(absolute_path().c_str());
+        return wwc::exists(name_.c_str());
     }
 
-    std::vector<file> file::ls() const noexcept {
+    std::vector<file> file::ls(bool abs) const noexcept {
         if (!is_dir()) {
             return {};
         }
@@ -29,11 +30,15 @@ namespace wwc {
             if (f == "." || f == "..") {
                 continue;
             }
-            result.emplace_back(utils::simple_join(name_, f.c_str()).c_str());
+            if (abs) {
+                result.emplace_back(utils::simple_join(name_, f.c_str()).c_str());
+            } else {
+                result.emplace_back(f.c_str());
+            }
         }
         return result;
     }
-    
+
     std::ostream& operator<<(std::ostream& os, const file& f) {
         return os << f.name_;
     }

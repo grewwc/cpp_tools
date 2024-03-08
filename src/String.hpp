@@ -106,7 +106,7 @@ namespace wwc {
 
         void from_file(const char *filename) {
             auto filename_str = expanduser(filename);
-            const char* full_filename = filename_str.c_str();
+            const char *full_filename = filename_str.c_str();
             std::ifstream in{full_filename};
             if (!in) {
                 perror("failed to open file");
@@ -170,6 +170,16 @@ namespace wwc {
                 }
             }
             return true;
+        }
+
+        template <typename T>
+        static String to_string(T val, const char *fmt = nullptr) noexcept {
+            if (fmt == nullptr) {
+                return std::to_string(val);
+            }
+            char buf[100];
+            snprintf(buf, sizeof(buf), fmt, val);
+            return String{buf};
         }
 
         template <typename Container>
