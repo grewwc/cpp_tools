@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "download_utils.hpp"
+#include "files.hpp"
 
 namespace wwc {
 
@@ -64,6 +65,8 @@ namespace wwc {
             return *this;
         }
 
+        String &ltrim(char ch = ' ') noexcept { lstrip(ch); }
+
         String &rstrip(char ch = ' ') noexcept {
             std::string::size_type pos = find_last_not_of(ch);
             switch (pos) {
@@ -73,18 +76,24 @@ namespace wwc {
             return *this;
         }
 
+        String &rtrim(char ch = ' ') noexcept { lstrip(ch); }
+
         String &strip(char ch = ' ') noexcept {
             lstrip(ch);
             rstrip(ch);
             return *this;
         }
 
-        String &strip_prefix(std::string prefix) noexcept {
+        String &trim(char ch = ' ') noexcept { strip(ch); }
+
+        String &strip_prefix(const std::string &prefix) noexcept {
             if (startsWith(prefix)) {
                 this->erase(0, prefix.size());
             }
             return *this;
         }
+
+        String &trim_prefix(std::string &prefix) noexcept { strip_prefix(prefix); }
 
         String lstrip_copy(char ch = ' ') const noexcept {
             String res{*this};
@@ -92,11 +101,15 @@ namespace wwc {
             return res;
         }
 
+        String ltrim_copy(char ch = ' ') const noexcept { return lstrip_copy(ch); }
+
         String rstrip_copy(char ch = ' ') const noexcept {
             String res{*this};
             res.rstrip(ch);
             return res;
         }
+
+        String rtrim_copy(char ch = ' ') const noexcept { return rstrip_copy(ch); }
 
         String strip_copy(char ch = ' ') const noexcept {
             String res{*this};
@@ -104,13 +117,25 @@ namespace wwc {
             return res;
         }
 
+        String trim_copy(char ch = ' ') const noexcept { return strip_copy(ch); }
+
+        static String from_file(String filename) {
+            String result;
+            result.from_file(filename);
+            return result;
+        }
+
+        file to_file() const noexcept { return file{this->c_str()}; }
+
         void from_file(const char *filename) {
-            const char *full_filename = filename = expanduser(filename).c_str();
+            auto filename_str = expanduser(filename);
+            const char *full_filename = filename_str.c_str();
             std::ifstream in{full_filename};
             if (!in) {
                 perror("failed to open file");
                 return;
             }
+            this->clear();
             std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), std::back_inserter(*this));
             in.close();
         }
@@ -168,6 +193,14 @@ namespace wwc {
                 }
             }
             return true;
+        }
+
+        template <typename T>
+        static String to_string(T val, const char *fmt = nullptr) noexcept {
+            if (fmt == nullptr) {
+                return std::to_string(val);
+            }
+            return format(fmt, std::forward<T>(val));
         }
 
         template <typename Container>
@@ -324,9 +357,6 @@ namespace wwc {
             return true;
         }
 
-        bool startsWith(const String &begin) const noexcept { return this->startsWith(static_cast<std::string>(begin)); }
-        bool endsWith(const String &end) const noexcept { return this->endsWith(static_cast<std::string>(end)); }
-
         // bool startsWith(const char *begin) const noexcept;
         // bool endsWith(const char *end) const noexcept;
 
@@ -393,13 +423,22 @@ namespace wwc {
         }
 
         bool write_to_file(const char *filename, const char *mode = "w") const {
-            FILE *f = fopen(filename, mode);
+            String temp = expanduser(filename);
+            FILE *f = fopen(temp.c_str(), mode);
             if (f == nullptr) {
                 return false;
             }
             fwrite(this->c_str(), this->size(), 1, f);
             fclose(f);
             return true;
+        }
+
+        template <typename... Args>
+        static String format(const char *fmt, Args... args) {
+            const auto sz = snprintf(nullptr, 0, fmt, args...);
+            std::vector<char> buf(sz + 1);
+            snprintf(buf.data(), sz + 1, fmt, std::forward<Args>(args)...);
+            return String(buf.data());
         }
 
     private:

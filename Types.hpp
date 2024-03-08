@@ -7,6 +7,7 @@
 #include "src/stopwatch.hpp"
 #include "src/types.hpp"
 #include "src/uf.hpp"
+#include "src/stream.hpp"
 namespace wwc {
     template <typename T>
     class MinHeap : public __helper::_Heap<T> {
