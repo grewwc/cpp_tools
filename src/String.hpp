@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "download_utils.hpp"
+#include "files.hpp"
 
 namespace wwc {
 
@@ -64,6 +65,8 @@ namespace wwc {
             return *this;
         }
 
+        String &ltrim(char ch = ' ') noexcept { lstrip(ch); }
+
         String &rstrip(char ch = ' ') noexcept {
             std::string::size_type pos = find_last_not_of(ch);
             switch (pos) {
@@ -73,18 +76,24 @@ namespace wwc {
             return *this;
         }
 
+        String &rtrim(char ch = ' ') noexcept { lstrip(ch); }
+
         String &strip(char ch = ' ') noexcept {
             lstrip(ch);
             rstrip(ch);
             return *this;
         }
 
-        String &strip_prefix(std::string prefix) noexcept {
+        String &trim(char ch = ' ') noexcept { strip(ch); }
+
+        String &strip_prefix(const std::string &prefix) noexcept {
             if (startsWith(prefix)) {
                 this->erase(0, prefix.size());
             }
             return *this;
         }
+
+        String &trim_prefix(std::string &prefix) noexcept { strip_prefix(prefix); }
 
         String lstrip_copy(char ch = ' ') const noexcept {
             String res{*this};
@@ -92,17 +101,31 @@ namespace wwc {
             return res;
         }
 
+        String ltrim_copy(char ch = ' ') const noexcept { return lstrip_copy(ch); }
+
         String rstrip_copy(char ch = ' ') const noexcept {
             String res{*this};
             res.rstrip(ch);
             return res;
         }
 
+        String rtrim_copy(char ch = ' ') const noexcept { return rstrip_copy(ch); }
+
         String strip_copy(char ch = ' ') const noexcept {
             String res{*this};
             res.strip(ch);
             return res;
         }
+
+        String trim_copy(char ch = ' ') const noexcept { return strip_copy(ch); }
+
+        static String from_file(String filename) {
+            String result;
+            result.from_file(filename);
+            return result;
+        }
+
+        file to_file() const noexcept { return file{this->c_str()}; }
 
         void from_file(const char *filename) {
             auto filename_str = expanduser(filename);
@@ -400,7 +423,8 @@ namespace wwc {
         }
 
         bool write_to_file(const char *filename, const char *mode = "w") const {
-            FILE *f = fopen(filename, mode);
+            String temp = expanduser(filename);
+            FILE *f = fopen(temp.c_str(), mode);
             if (f == nullptr) {
                 return false;
             }
