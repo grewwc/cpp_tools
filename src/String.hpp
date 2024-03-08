@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "download_utils.hpp"
-#include "files.hpp"
 
 namespace wwc {
 
@@ -65,7 +64,7 @@ namespace wwc {
             return *this;
         }
 
-        String &ltrim(char ch = ' ') noexcept { lstrip(ch); }
+        String &ltrim(char ch = ' ') noexcept { return lstrip(ch); }
 
         String &rstrip(char ch = ' ') noexcept {
             std::string::size_type pos = find_last_not_of(ch);
@@ -76,7 +75,7 @@ namespace wwc {
             return *this;
         }
 
-        String &rtrim(char ch = ' ') noexcept { lstrip(ch); }
+        String &rtrim(char ch = ' ') noexcept { return lstrip(ch); }
 
         String &strip(char ch = ' ') noexcept {
             lstrip(ch);
@@ -84,7 +83,7 @@ namespace wwc {
             return *this;
         }
 
-        String &trim(char ch = ' ') noexcept { strip(ch); }
+        String &trim(char ch = ' ') noexcept { return strip(ch); }
 
         String &strip_prefix(const std::string &prefix) noexcept {
             if (startsWith(prefix)) {
@@ -93,7 +92,7 @@ namespace wwc {
             return *this;
         }
 
-        String &trim_prefix(std::string &prefix) noexcept { strip_prefix(prefix); }
+        String &trim_prefix(std::string &prefix) noexcept { return strip_prefix(prefix); }
 
         String lstrip_copy(char ch = ' ') const noexcept {
             String res{*this};
@@ -124,8 +123,6 @@ namespace wwc {
             result.from_file(filename);
             return result;
         }
-
-        file to_file() const noexcept { return file{this->c_str()}; }
 
         void from_file(const char *filename) {
             auto filename_str = expanduser(filename);
