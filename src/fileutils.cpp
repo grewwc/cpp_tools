@@ -69,7 +69,7 @@ namespace wwc {
     bool exists(const char* path) {
         struct stat buf;
         std::string p = expanduser(path);
-        return stat(p.c_str(), &buf) != 0;
+        return stat(p.c_str(), &buf) == 0;
     }
 
     std::vector<std::string> ls_dir(const char* dir_name) {
