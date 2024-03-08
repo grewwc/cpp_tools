@@ -177,9 +177,7 @@ namespace wwc {
             if (fmt == nullptr) {
                 return std::to_string(val);
             }
-            char buf[100];
-            snprintf(buf, sizeof(buf), fmt, val);
-            return String{buf};
+            return format(fmt, std::forward<T>(val));
         }
 
         template <typename Container>
@@ -409,6 +407,14 @@ namespace wwc {
             fwrite(this->c_str(), this->size(), 1, f);
             fclose(f);
             return true;
+        }
+
+        template <typename... Args>
+        static String format(const char *fmt, Args... args) {
+            const auto sz = snprintf(nullptr, 0, fmt, args...);
+            std::vector<char> buf(sz + 1);
+            snprintf(buf.data(), sz + 1, fmt, std::forward<Args>(args)...);
+            return String(buf.data());
         }
 
     private:

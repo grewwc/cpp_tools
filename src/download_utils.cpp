@@ -16,7 +16,6 @@ namespace wwc {
         CURLcode res;
 
         std::call_once(init_flag, curl_global_init, CURL_GLOBAL_ALL);
-        std::call_once(init_flag, curl_global_init, CURL_GLOBAL_ALL);
         curl_global_init(CURL_GLOBAL_ALL);
 
         curl_handle = curl_easy_init();
