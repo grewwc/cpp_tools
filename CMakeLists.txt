@@ -17,5 +17,9 @@ add_subdirectory(thirdparty)
 add_subdirectory(src)
 add_subdirectory(executable_src)
 
+file(GLOB SOURCE_HEADER
+    NormalUtils.hpp
+    Types.hpp
+)
 
-message("Version=${CMAKE_CXX_STANDARD}")
+file(COPY ${SOURCE_HEADER} DESTINATION ${CMAKE_SOURCE_DIR}/include)
