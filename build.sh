@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cmd=$(which cmake)
+cmd=$(which cmake3)
 
 if [[ $? -ne 0 ]]; then
     cmd=$(which cmake)
