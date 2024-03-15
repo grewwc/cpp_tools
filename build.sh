@@ -1,17 +1,21 @@
 #!/bin/bash
 
-cmd=`which cmake`
+cmd=$(which cmake3)
 
-while getopts :b: OPT; do 
-    case "$OPT" in 
-        b) cmd="$OPTARG"
-            ;;
+if [[ $? -ne 0 ]]; then
+    cmd=$(which cmake)
+fi
+
+while getopts :b: OPT; do
+    case "$OPT" in
+    b)
+        cmd="$OPTARG"
+        ;;
     esac
 
-done 
-
+done
 
 echo "building project..."
 
-$cmd -S . -B build 
+$cmd -S . -B build
 $cmd --build build -j 4

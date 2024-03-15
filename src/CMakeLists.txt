@@ -17,10 +17,6 @@ file(GLOB GLOG_SOURCES
     ${CMAKE_SOURCE_DIR}/thirdparty/glog/src/dangle.cc
 )
 
-message(STATUS "what ${GFLAGS_SOURCES}")
-message(STATUS "what ${GLOG_SOURCES}")
-message(STATUS "what ${CJSON_SOURCES}")
-
 target_sources(cpp_tools PRIVATE
     ${SRC_SOURCE}
     ${GFLAGS_SOURCES}

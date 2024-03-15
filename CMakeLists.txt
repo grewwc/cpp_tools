@@ -18,4 +18,3 @@ add_subdirectory(src)
 add_subdirectory(executable_src)
 
 
-message("Version=${CMAKE_CXX_STANDARD}")
