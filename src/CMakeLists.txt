@@ -29,4 +29,3 @@ target_sources(cpp_tools PRIVATE
 )
 
 file(COPY ${SRC_HEADER} DESTINATION ${CMAKE_SOURCE_DIR}/include)
-file(COPY String.hpp DESTINATION ${CMAKE_SOURCE_DIR}/include)

@@ -5,6 +5,7 @@
 #include "RandomUtils.hpp"
 #include "src/download_utils.hpp"
 #include "src/fileutils.hpp"
+#include "String.hpp"
 
 namespace wwc {
     template <typename T, template <typename, typename...> class Container, typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
