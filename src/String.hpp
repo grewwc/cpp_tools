@@ -11,7 +11,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include <optional>
 #include "download_utils.hpp"
 
 namespace wwc {
