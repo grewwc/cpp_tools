@@ -10,7 +10,12 @@ int main(int argc, char* argv[]) {
         cout << "c 2**2" << endl;
         return 0;
     }
-    String s = String::format("python -c \"print(%s)\"", argv[1]);
+    String cmd = "python3";
+    String s = run_cmd("which python3");
+    if (s.trim().empty()) {
+        cmd = "python";
+    }
+    s = String::format("%s -c \"print(%s)\"", cmd.c_str(), argv[1]);
     s = run_cmd(s.c_str());
     cout << s.trim('\n') << endl;
 }
