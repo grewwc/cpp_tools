@@ -11,6 +11,8 @@ using namespace std;
 template <typename T>
 class MDC {
 public:
+    MDC() = delete;
+
     static void put(std::string key, T val) { m_.emplace(std::move(key), std::move(val)); }
 
     static std::optional<T> get(const std::string& key) {
