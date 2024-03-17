@@ -3,9 +3,12 @@
 #include <vector>
 
 #include "RandomUtils.hpp"
+#include "src/String.hpp"
+#include "src/barrier.hpp"
+#include "src/countdown_latch.hpp"
 #include "src/download_utils.hpp"
 #include "src/fileutils.hpp"
-#include "src/String.hpp"
+#include "src/jthread.hpp"
 #include "src/mdc.hpp"
 
 namespace wwc {
