@@ -1,4 +1,4 @@
-#include "Algorithm.hpp"
+#include "src/algorithm.hpp"
 #include "RandomUtils.hpp"
 #include <algorithm>
 #include <gtest/gtest.h>
