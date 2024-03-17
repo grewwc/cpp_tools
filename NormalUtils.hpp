@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "RandomUtils.hpp"
+#include "Types.hpp"
+#include "src/algorithm.hpp"
 #include "src/String.hpp"
 #include "src/barrier.hpp"
 #include "src/countdown_latch.hpp"
