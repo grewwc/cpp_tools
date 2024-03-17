@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+using namespace wwc;
+
 countdown_latch::countdown_latch(std::size_t size) noexcept : count_{size} {}
 
 void countdown_latch::count_down() {
