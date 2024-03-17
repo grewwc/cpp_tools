@@ -7,6 +7,7 @@
 #include "src/fileutils.hpp"
 #include "src/String.hpp"
 #include "src/mdc.hpp"
+#include "src/countdown_latch.hpp"
 
 namespace wwc {
     template <typename T, template <typename, typename...> class Container, typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>

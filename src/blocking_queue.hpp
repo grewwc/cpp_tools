@@ -13,7 +13,7 @@ namespace wwc {
     template <typename T>
     class blocking_queue {
     public:
-        blocking_queue(const size_t sz) noexcept : sz_{sz}, dq_{std::deque<T>(0)} {}
+        explicit blocking_queue(const size_t sz) noexcept : sz_{sz}, dq_{std::deque<T>(0)} {}
 
         bool push(const T val, const size_t timeout_mills = 0) noexcept {
             std::unique_lock<wwc::hierachy_mutex> lk(mu_);
