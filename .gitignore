@@ -6,4 +6,5 @@ cmake/build
 Windows
 bin
 lib
+!thirdparty/grpc/third_party/cares/cares/src/lib
 main
