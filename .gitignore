@@ -8,5 +8,5 @@ bin
 lib
 !thirdparty/grpc/third_party/cares/cares/src/lib
 !thirdparty/grpc/src/core/lib
-!thirdparty/grpc/src/core/lib/event_engine/windows
+!thirdparty/grpc/src/core/lib/**/windows
 main
