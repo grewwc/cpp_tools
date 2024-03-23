@@ -55,6 +55,7 @@ popd
 pushd lib
 archive 
 mv $name ../../../lib/
+cp -r include/* ../../../include/
 popd
 
 popd
