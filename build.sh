@@ -10,7 +10,7 @@ fi
 while getopts :b:g: OPT; do
     case "$OPT" in
     b)
-        cmd="$OPTARG"
+        export cmd="$OPTARG"
         ;;
     g)
         export build_grpc=true

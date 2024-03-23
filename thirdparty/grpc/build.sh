@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "here " $build_grpc
 if [[ "$build_grpc" != "true" ]]; then 
     exit 0
 fi
@@ -34,12 +33,6 @@ if [ ! -d cmake/build ]; then
 fi
 
 pushd cmake/build
-
-cmd=$(which cmake3)
-
-if [[ $? -ne 0 ]]; then
-    cmd=$(which cmake)
-fi
 
 ${cmd} -DgRPC_INSTALL=ON \
     -DgRPC_BUILD_TESTS=OFF \
