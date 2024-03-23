@@ -1,0 +1,11 @@
+prefix=/Users/wwc129/cpp_tools/thirdparty/grpc/lib
+exec_prefix=/Users/wwc129/cpp_tools/thirdparty/grpc/lib
+libdir=/Users/wwc129/cpp_tools/thirdparty/grpc/lib/lib
+includedir=/Users/wwc129/cpp_tools/thirdparty/grpc/lib/include
+
+Name: UTF8 Range
+Description: Google's UTF8 Library
+Version: 1.0
+Requires: absl_strings
+Libs: -L${libdir} -lutf8_validity -lutf8_range 
+Cflags: -I${includedir}

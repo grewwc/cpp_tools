@@ -1,0 +1,13 @@
+prefix=/Users/wwc129/cpp_tools/thirdparty/grpc
+exec_prefix=/Users/wwc129/cpp_tools/thirdparty/grpc
+libdir=/Users/wwc129/cpp_tools/thirdparty/grpc/lib
+sharedlibdir=/Users/wwc129/cpp_tools/thirdparty/grpc/lib
+includedir=/Users/wwc129/cpp_tools/thirdparty/grpc/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.3
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
