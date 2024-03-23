@@ -6,10 +6,14 @@ if [[ $? -ne 0 ]]; then
     cmd=$(which cmake)
 fi
 
-while getopts :b: OPT; do
+
+while getopts :b:g: OPT; do
     case "$OPT" in
     b)
         cmd="$OPTARG"
+        ;;
+    g)
+        export build_grpc=true
         ;;
     esac
 
@@ -18,4 +22,4 @@ done
 echo "building project..."
 
 $cmd -S . -B build
-$cmd --build build -j 4
+# $cmd --build build -j 6

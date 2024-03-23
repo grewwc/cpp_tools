@@ -2,8 +2,17 @@
 add_subdirectory(gflags)
 # add_subdirectory(cJson)
 add_subdirectory(curl-master)
-
+# add_subdirectory(grpc)
 # file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
+
+message(STATUS "building grpc...")
+execute_process(COMMAND 
+    /bin/bash -c grpc/build.sh 
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+message(STATUS "${output_var}")
+
 
 file(GLOB CJSON_HEADERS cJSON/*.h)
 # file(GLOB CJSON_SOURCES cJSON/*.c)
