@@ -50,5 +50,5 @@ archive
 mv $name ../../../lib/
 cp -r include/* ../../../include/
 popd
-
+cp bin/protoc ../../bin/
 popd
