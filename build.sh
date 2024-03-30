@@ -1,19 +1,12 @@
 #!/bin/bash
+shopt -s expand_aliases
 
-cmd=$(which cmake3)
+source $HOME/.bashrc
 
-if [[ $? -ne 0 ]]; then
-    cmd=$(which cmake)
-fi
-
-
-while getopts :b:g: OPT; do
+while getopts :b: OPT; do
     case "$OPT" in
     b)
         export cmd="$OPTARG"
-        ;;
-    g)
-        export build_grpc=true
         ;;
     esac
 
@@ -21,5 +14,6 @@ done
 
 echo "building project..."
 
-$cmd -S . -B build
+
+cmake -S . -B build
 # $cmd --build build -j 6
