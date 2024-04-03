@@ -17,8 +17,6 @@ file(GLOB GLOG_SOURCES
     ${CMAKE_SOURCE_DIR}/thirdparty/glog/src/dangle.cc
 )
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
-
 target_sources(cpp_tools PRIVATE
     ${SRC_SOURCE}
     ${GFLAGS_SOURCES}

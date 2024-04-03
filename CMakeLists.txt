@@ -12,6 +12,7 @@ add_definitions(-DGFLAGS_BAZEL_BUILD=true -DHAVE_PTHREAD=true)
 add_library(cpp_tools STATIC "")
 
 include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/include)
 add_subdirectory(tests)
 add_subdirectory(thirdparty)
 add_subdirectory(src)
