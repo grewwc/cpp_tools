@@ -16,4 +16,4 @@ echo "building project..."
 
 
 cmake -S . -B build
-# $cmd --build build -j 6
+cmake --build build -j 6
