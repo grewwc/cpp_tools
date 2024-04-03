@@ -22,6 +22,7 @@ message(STATUS "here==> ${CMAKE_SOURCE_DIR}")
 target_link_libraries(
     all_test
     GTest::gtest_main
+    cpp_tools
 )
 
 include(GoogleTest)

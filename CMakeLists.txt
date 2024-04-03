@@ -13,9 +13,9 @@ add_library(cpp_tools STATIC "")
 
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/include)
-add_subdirectory(tests)
 add_subdirectory(thirdparty)
 add_subdirectory(src)
 add_subdirectory(executable_src)
 
+add_subdirectory(tests)
 
