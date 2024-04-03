@@ -1,5 +1,6 @@
 #pragma once
 
+#include "download_utils.hpp"
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
@@ -8,11 +9,11 @@
 #include <functional>
 #include <iostream>
 #include <iterator>
+#include <optional>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <optional>
-#include "download_utils.hpp"
 
 namespace wwc {
 
@@ -58,8 +59,8 @@ namespace wwc {
         String &lstrip(char ch = ' ') noexcept {
             auto pos = find_first_not_of(ch);
             switch (pos) {
-                case std::string::npos: break;
-                default: this->erase(0, pos);
+            case std::string::npos: break;
+            default: this->erase(0, pos);
             }
             return *this;
         }
@@ -69,8 +70,8 @@ namespace wwc {
         String &rstrip(char ch = ' ') noexcept {
             std::string::size_type pos = find_last_not_of(ch);
             switch (pos) {
-                case std::string::npos: break;
-                default: this->erase(this->begin() + pos + 1, this->end());
+            case std::string::npos: break;
+            default: this->erase(this->begin() + pos + 1, this->end());
             }
             return *this;
         }
@@ -133,7 +134,8 @@ namespace wwc {
                 return;
             }
             this->clear();
-            std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), std::back_inserter(*this));
+            std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(),
+                      std::back_inserter(*this));
             in.close();
         }
 
@@ -248,7 +250,9 @@ namespace wwc {
 
         std::vector<long> find_all_long() const noexcept { return find_all_number<long>('l'); }
 
-        std::vector<double> find_all_double() const noexcept { return find_all_number<double>('d'); }
+        std::vector<double> find_all_double() const noexcept {
+            return find_all_number<double>('d');
+        }
 
         std::vector<std::size_t> find_all(const char *data) const noexcept {
             const auto DATA_LEN = strlen(data);
@@ -264,7 +268,8 @@ namespace wwc {
             return res;
         }
 
-        std::vector<int> find_all_substr(const std::string &sub, std::size_t begin = 0) const noexcept {
+        std::vector<int> find_all_substr(const std::string &sub,
+                                         std::size_t begin = 0) const noexcept {
             std::vector<int> result;
             int idx = -1;
             while (true) {
@@ -276,6 +281,18 @@ namespace wwc {
                 begin = static_cast<std::size_t>(idx + sub.size());
             }
             return result;
+        }
+
+        bool is_match(String re_pattern) const noexcept {
+            if (!re_pattern.startsWith("^")) {
+                re_pattern = "^" + re_pattern;
+            }
+            if (!re_pattern.endsWith("$")) {
+                re_pattern += '$';
+            }
+            std::regex re(re_pattern);
+            std::sregex_iterator it(cbegin(), cend(), re);
+            return it != std::sregex_iterator();
         }
 
         std::size_t count(char ch) const noexcept { return std::count(cbegin(), cend(), ch); }
@@ -454,9 +471,9 @@ namespace wwc {
             const char *beg = spaceSaperated.c_str();
             while (true) {
                 switch (type) {
-                    case 'l': i = strtol(beg, &end, 10); break;
-                    case 'd': i = strtod(beg, &end); break;
-                    default: printf("unknow type %c\n", type); goto end;
+                case 'l': i = strtol(beg, &end, 10); break;
+                case 'd': i = strtod(beg, &end); break;
+                default: printf("unknow type %c\n", type); goto end;
                 }
                 if (errno == ERANGE) {
                     fprintf(stderr, "range error\n");
@@ -548,7 +565,8 @@ namespace wwc {
             std::vector<int> overflow(l1 + l2 + 1, 0);
             for (size_t j = 0; j < l2; j++) {
                 for (size_t i = 0; i < l1; i++) {
-                    int val = (s1[l1 - 1 - i] - '0') * (s2[l2 - 1 - j] - '0') + overflow[i + j] + result[i + j];
+                    int val = (s1[l1 - 1 - i] - '0') * (s2[l2 - 1 - j] - '0') + overflow[i + j] +
+                              result[i + j];
                     overflow[i + j] = 0;
                     if (val >= 10) {
                         overflow[i + j + 1] += val / 10;
@@ -572,7 +590,8 @@ namespace wwc {
 
             String s;
             s.reserve(result.size());
-            std::transform(result.cbegin(), result.cend(), std::back_inserter(s), [](int val) -> char { return (char)(val + '0'); });
+            std::transform(result.cbegin(), result.cend(), std::back_inserter(s),
+                           [](int val) -> char { return (char)(val + '0'); });
             s.lstrip('0');
             if (minus) {
                 return String("-") + s;
@@ -586,7 +605,8 @@ namespace wwc {
 
             // both minus
             if (s1[0] == '-' && s2[0] == '-') {
-                return String("-") + string_plus(s1.substr(1, s1.size() - 1), s2.substr(1, s2.size() - 1));
+                return String("-") +
+                       string_plus(s1.substr(1, s1.size() - 1), s2.substr(1, s2.size() - 1));
             }
             // one plus, one minus
             if (s1[0] == '-' && s2[0] != '-') {
@@ -627,7 +647,8 @@ namespace wwc {
             std::reverse(result.begin(), result.end());
             String s;
             s.reserve(l1 + 1);
-            std::transform(result.cbegin(), result.cend(), std::back_inserter(s), [](int val) { return (char)(val + '0'); });
+            std::transform(result.cbegin(), result.cend(), std::back_inserter(s),
+                           [](int val) { return (char)(val + '0'); });
             if (s.size() == 1 && s[0] == '0') {
                 return s;
             }
@@ -688,7 +709,8 @@ namespace wwc {
             String s;
             s.resize(result.size());
             std::reverse(result.begin(), result.end());
-            std::transform(result.cbegin(), result.cend(), s.begin(), [](int val) { return (char)(val + '0'); });
+            std::transform(result.cbegin(), result.cend(), s.begin(),
+                           [](int val) { return (char)(val + '0'); });
             if (s.size() == 1 && s[0] == '0') {
                 return s;
             }
@@ -702,4 +724,4 @@ namespace wwc {
             return s;
         }
     };
-}  // namespace wwc
+} // namespace wwc
