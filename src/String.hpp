@@ -93,7 +93,7 @@ namespace wwc {
             return *this;
         }
 
-        String &trim_prefix(std::string &prefix) noexcept { return strip_prefix(prefix); }
+        String &trim_prefix(const std::string &prefix) noexcept { return strip_prefix(prefix); }
 
         String lstrip_copy(char ch = ' ') const noexcept {
             String res{*this};
