@@ -25,7 +25,7 @@ namespace wwc {
     ParsedResult ArgumentParser::parse() const {
         ParsedResult result;
         String data_str{data_};
-        std::vector<String> data_vec = data_str.split(' ');
+        std::vector<String> data_vec = data_str.split(' ', true);
         bool is_flag = false;
         String prev_arg_name;
         int positional_args_index = 0;

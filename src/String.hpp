@@ -134,8 +134,7 @@ namespace wwc {
                 return;
             }
             this->clear();
-            std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(),
-                      std::back_inserter(*this));
+            std::copy(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>(), std::back_inserter(*this));
             in.close();
         }
 
@@ -158,17 +157,38 @@ namespace wwc {
             return string_mul(*this, other);
         }
 
-        std::vector<String> split(char ch = ' ') const noexcept {
+        std::vector<String> split(char ch = ' ', bool keep_quote = false) const noexcept {
             std::vector<String> result;
             const auto N = size();
             String word;
+            bool in_double_quote = false;
+            bool in_single_quote = false;
             for (int i = 0; i < N; i++) {
                 char cur_ch = (*this)[i];
-                if (ch == cur_ch) {
-                    if (!word.empty()) {
-                        result.emplace_back(std::move(word));
-                        word.clear();
+                // in quote
+                if (cur_ch == '"') {
+                    if (keep_quote) {
+                        if (in_double_quote) {
+                            result.emplace_back(std::move(word));
+                            word.clear();
+                        } else if (in_single_quote) {
+                            word += cur_ch;
+                        }
                     }
+                    in_double_quote = !in_double_quote;
+                } else if (cur_ch == '\'') {
+                    if (keep_quote) {
+                        if (in_single_quote) {
+                            result.emplace_back(std::move(word));
+                            word.clear();
+                        } else if (in_double_quote) {
+                            word += cur_ch;
+                        }
+                    }
+                    in_single_quote = !in_single_quote;
+                } else if (ch == cur_ch && (!keep_quote || (!in_double_quote && !in_single_quote)) && !word.empty()) {
+                    result.emplace_back(std::move(word));
+                    word.clear();
                 } else {
                     word += cur_ch;
                 }
@@ -250,9 +270,7 @@ namespace wwc {
 
         std::vector<long> find_all_long() const noexcept { return find_all_number<long>('l'); }
 
-        std::vector<double> find_all_double() const noexcept {
-            return find_all_number<double>('d');
-        }
+        std::vector<double> find_all_double() const noexcept { return find_all_number<double>('d'); }
 
         std::vector<std::size_t> find_all(const char *data) const noexcept {
             const auto DATA_LEN = strlen(data);
@@ -268,8 +286,7 @@ namespace wwc {
             return res;
         }
 
-        std::vector<int> find_all_substr(const std::string &sub,
-                                         std::size_t begin = 0) const noexcept {
+        std::vector<int> find_all_substr(const std::string &sub, std::size_t begin = 0) const noexcept {
             std::vector<int> result;
             int idx = -1;
             while (true) {
@@ -565,8 +582,7 @@ namespace wwc {
             std::vector<int> overflow(l1 + l2 + 1, 0);
             for (size_t j = 0; j < l2; j++) {
                 for (size_t i = 0; i < l1; i++) {
-                    int val = (s1[l1 - 1 - i] - '0') * (s2[l2 - 1 - j] - '0') + overflow[i + j] +
-                              result[i + j];
+                    int val = (s1[l1 - 1 - i] - '0') * (s2[l2 - 1 - j] - '0') + overflow[i + j] + result[i + j];
                     overflow[i + j] = 0;
                     if (val >= 10) {
                         overflow[i + j + 1] += val / 10;
@@ -605,8 +621,7 @@ namespace wwc {
 
             // both minus
             if (s1[0] == '-' && s2[0] == '-') {
-                return String("-") +
-                       string_plus(s1.substr(1, s1.size() - 1), s2.substr(1, s2.size() - 1));
+                return String("-") + string_plus(s1.substr(1, s1.size() - 1), s2.substr(1, s2.size() - 1));
             }
             // one plus, one minus
             if (s1[0] == '-' && s2[0] != '-') {
@@ -709,8 +724,7 @@ namespace wwc {
             String s;
             s.resize(result.size());
             std::reverse(result.begin(), result.end());
-            std::transform(result.cbegin(), result.cend(), s.begin(),
-                           [](int val) { return (char)(val + '0'); });
+            std::transform(result.cbegin(), result.cend(), s.begin(), [](int val) { return (char)(val + '0'); });
             if (s.size() == 1 && s[0] == '0') {
                 return s;
             }

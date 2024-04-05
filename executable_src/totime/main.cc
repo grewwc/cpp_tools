@@ -1,6 +1,7 @@
 #include "NormalUtils.hpp"
 #include <ctime>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 using namespace wwc;
@@ -13,7 +14,9 @@ void print_current_time() {
 int main(int argc, char *argv[]) {
     String s;
     for (int i = 1; i < argc; i++) {
+        s += '"';
         s += argv[i];
+        s += '"';
         s += " ";
     }
     ArgumentParser parser(s.c_str());
@@ -29,6 +32,21 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     String ts = result.get_positional_arg(0);
+    if (!ts.is_integer()) {
+        vector<String> vec = ts.split(' ', true);
+        std::istringstream ss{ts.c_str()};
+        std::tm t;
+        if (vec.size() == 1) {
+            ss >> std::get_time(&t, "%Y-%m-%d");
+            t.tm_hour = 0;
+            t.tm_min = 0;
+            t.tm_sec = 0;
+        } else if (vec.size() == 2) { 
+            ss >> std::get_time(&t, "%Y-%m-%d %H:%M:%S");
+        }
+        cout << mktime(&t) << endl;
+        return 0;
+    }
     time_t now = (time_t)ts.to_long();
     auto *timestamp = gmtime(&now);
     if (timestamp->tm_year > 1000) {
