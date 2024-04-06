@@ -3,6 +3,21 @@
 #include <iostream>
 
 namespace wwc {
+    ArgumentParser::ArgumentParser(int argc, char *argv[]) {
+        for (int i = 0; i < argc; i++) {
+            String temp = argv[i];
+            temp.trim();
+            if (temp.contains("\"")) {
+                temp = String::format(R"('%s')", argv[i]);
+            } else {
+                temp = String::format(R"("%s")", argv[i]);
+            }
+            data_ += std::move(temp);
+            if (i != argc - 1) {
+                data_ += " ";
+            }
+        }
+    }
 
     void ArgumentParser::add_argument(const char *flag, const ArgType &type, const char *default_val,
                                       const char *help_msg) {
@@ -30,8 +45,9 @@ namespace wwc {
         String prev_arg_name;
         int positional_args_index = 0;
         for (String &val : data_vec) {
+            val.strip('"').strip('\'');
             if (val.startsWith("-")) {
-                val = val.ltrim('-');
+                val.ltrim('-');
                 if (named_args_.find(val) == named_args_.cend()) {
                     continue;
                 }
@@ -42,8 +58,7 @@ namespace wwc {
                             String::format("parse failed: -%s -%s not valid", prev_arg_name.c_str(), val.c_str()));
                     } else {
                         // bool value
-                        result.named_args_.emplace(std::piecewise_construct,
-                                                   std::forward_as_tuple(val.c_str()),
+                        result.named_args_.emplace(std::piecewise_construct, std::forward_as_tuple(val.c_str()),
                                                    std::forward_as_tuple(ArgType::BOOL, "true", info.help_msg.c_str()));
                         is_flag = false;
                     }
@@ -56,7 +71,7 @@ namespace wwc {
             } else {
                 if (prev_arg_name.empty()) {
                     result.positional_args_[positional_args_index++] = val;
-                    prev_arg_name = val;
+                    // prev_arg_name = val;
                     continue;
                 }
                 if (named_args_.find(prev_arg_name) == named_args_.cend()) {

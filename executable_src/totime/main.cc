@@ -13,16 +13,10 @@ void print_current_time() {
 
 int main(int argc, char *argv[]) {
     String s;
-    for (int i = 1; i < argc; i++) {
-        s += '"';
-        s += argv[i];
-        s += '"';
-        s += " ";
-    }
-    ArgumentParser parser(s.c_str());
+    ArgumentParser parser(argc, argv);
     parser.add_argument("-ts", ArgType::BOOL, "false", "show version");
     ParsedResult result = parser.parse();
-    if (result.get_positional_args().empty()) {
+    if (result.get_positional_args().size() == 1) {
         print_current_time();
         return 0;
     }
@@ -31,7 +25,7 @@ int main(int argc, char *argv[]) {
         print_current_time();
         return 0;
     }
-    String ts = result.get_positional_arg(0);
+    String ts = result.get_positional_arg(1);
     if (!ts.is_integer()) {
         vector<String> vec = ts.split(' ', true);
         std::istringstream ss{ts.c_str()};
@@ -41,7 +35,7 @@ int main(int argc, char *argv[]) {
             t.tm_hour = 0;
             t.tm_min = 0;
             t.tm_sec = 0;
-        } else if (vec.size() == 2) { 
+        } else if (vec.size() == 2) {
             ss >> std::get_time(&t, "%Y-%m-%d %H:%M:%S");
         }
         cout << mktime(&t) << endl;

@@ -40,6 +40,7 @@ namespace wwc {
     class ArgumentParser {
     public:
         explicit ArgumentParser(const char *args) : data_(args) {}
+        explicit ArgumentParser(int argc, char* argv[]);
         void add_argument(const char *flag, const ArgType &type, const char *default_val = nullptr,
                           const char *help_msg = nullptr);
         void print_help() const;
@@ -47,6 +48,6 @@ namespace wwc {
 
     private:
         std::unordered_map<std::string, ParsedResult::ArgInfo> named_args_;
-        const std::string data_;
+        std::string data_;
     };
 } // namespace wwc

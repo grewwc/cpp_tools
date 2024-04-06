@@ -186,9 +186,11 @@ namespace wwc {
                         }
                     }
                     in_single_quote = !in_single_quote;
-                } else if (ch == cur_ch && (!keep_quote || (!in_double_quote && !in_single_quote)) && !word.empty()) {
-                    result.emplace_back(std::move(word));
-                    word.clear();
+                } else if (ch == cur_ch) {
+                    if (!keep_quote || (!in_double_quote && !in_single_quote) && !word.empty()) {
+                        result.emplace_back(std::move(word));
+                        word.clear();
+                    }
                 } else {
                     word += cur_ch;
                 }
