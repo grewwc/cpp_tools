@@ -190,6 +190,8 @@ namespace wwc {
                     if (!keep_quote || (!in_double_quote && !in_single_quote) && !word.empty()) {
                         result.emplace_back(std::move(word));
                         word.clear();
+                    } else if (in_double_quote || in_single_quote) {
+                        word += cur_ch;
                     }
                 } else {
                     word += cur_ch;

@@ -8,14 +8,11 @@ namespace wwc {
             String temp = argv[i];
             temp.trim();
             if (temp.contains("\"")) {
-                temp = String::format(R"('%s')", argv[i]);
+                temp = String::format(R"('%s' )", argv[i]);
             } else {
-                temp = String::format(R"("%s")", argv[i]);
+                temp = String::format(R"("%s" )", argv[i]);
             }
             data_ += std::move(temp);
-            if (i != argc - 1) {
-                data_ += " ";
-            }
         }
     }
 
