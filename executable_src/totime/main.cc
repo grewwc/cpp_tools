@@ -1,8 +1,8 @@
 #include "NormalUtils.hpp"
 #include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 
 using namespace std;
 using namespace wwc;
@@ -42,7 +42,15 @@ int main(int argc, char *argv[]) {
         cout << mktime(&t) << endl;
         return 0;
     }
+    // argument is integer
+    if (ts.size() != 10 && ts.size() != 13) {
+        cout << String::format("invalid timestamp: %s\n", ts.c_str());
+        return 0;
+    }
     time_t now = (time_t)ts.to_long();
+    if (ts.size() == 13) {
+        now /= 1000L;
+    }
     auto *timestamp = gmtime(&now);
     if (timestamp->tm_year > 1000) {
         String ts = result.get_positional_arg(0);
