@@ -51,13 +51,13 @@ int main(int argc, char *argv[]) {
     if (ts.size() == 13) {
         now /= 1000L;
     }
-    auto *timestamp = gmtime(&now);
+    auto *timestamp = localtime(&now);
     if (timestamp->tm_year > 1000) {
         String ts = result.get_positional_arg(0);
         now = (time_t)ts.to_long() / 1000;
-        timestamp = gmtime(&now);
+        timestamp = localtime(&now);
     }
-    cout << String::format("%04d-%02d-%02d %02d:%02d:%02d", timestamp->tm_year + 1900, timestamp->tm_mon,
+    cout << String::format("%04d-%02d-%02d %02d:%02d:%02d", timestamp->tm_year + 1900, timestamp->tm_mon + 1,
                            timestamp->tm_mday, timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec)
          << endl;
     return 0;
