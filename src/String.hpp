@@ -163,7 +163,7 @@ namespace wwc {
             String word;
             bool in_double_quote = false;
             bool in_single_quote = false;
-            for (int i = 0; i < N; i++) {
+            for (size_t i = 0; i < N; i++) {
                 char cur_ch = (*this)[i];
                 // in quote
                 if (cur_ch == '"') {
@@ -209,7 +209,7 @@ namespace wwc {
             if (c1 != '+' && c1 != '-' && !isdigit(c1)) {
                 return false;
             }
-            for (int i = 1; i < size(); i++) {
+            for (size_t i = 1; i < size(); i++) {
                 const char ch = (*this)[i];
                 if (!isdigit(ch)) {
                     return false;
@@ -543,7 +543,8 @@ namespace wwc {
 
         static int kmp(const std::string &s, const std::string &sub, std::size_t begin) noexcept {
             std::vector<int> next = get_kmp_prefix_array(sub);
-            std::size_t i = begin, j = 0;
+            std::size_t i = begin;
+            int j = 0;
             while (i < s.size() && j < sub.size()) {
                 if (s[i] == sub[j]) {
                     i++, j++;
