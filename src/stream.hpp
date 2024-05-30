@@ -58,6 +58,18 @@ namespace wwc {
             next_.clear();
             return from(std::move(data_));
         }
+        
+        size_t count() const noexcept {
+            return data_.size();
+        }
+        
+        T max() const noexcept {
+            return *std::max_element(std::cbegin(data_), std::cend(data_));
+        }
+        
+        T min() const noexcept {
+            return *std::min_element(std::cbegin(data_), std::cend(data_));
+        }
 
         Stream<Container, T> shuffle() {
             std::random_device rd;
