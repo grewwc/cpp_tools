@@ -2,6 +2,7 @@
 add_subdirectory(gflags)
 # add_subdirectory(cJson)
 add_subdirectory(curl-master)
+add_subdirectory(Crow)
 # add_subdirectory(grpc)
 # file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
 
@@ -12,10 +13,13 @@ message(STATUS "${output_var}")
 file(GLOB CJSON_HEADERS cJSON/*.h)
 # file(GLOB CJSON_SOURCES cJSON/*.c)
 file(GLOB THREAD_POOL_HEADERS thread-pool/include/BS_thread_pool.hpp)
+file(GLOB ASIO_DIR asio-1.30.2/include)
 
 message("copy cjson file")
 file(COPY ${CJSON_HEADERS} DESTINATION ${CMAKE_SOURCE_DIR}/include)
 file(COPY ${THREAD_POOL_HEADERS} DESTINATION ${CMAKE_SOURCE_DIR}/include)
+file(COPY ${ASIO_DIR}/asio.hpp DESTINATION ${CMAKE_SOURCE_DIR}/include)
+file(COPY ${ASIO_DIR}/asio DESTINATION ${CMAKE_SOURCE_DIR}/include)
 
 # file(GLOB GLOG_SOURCES 
 #     glog/src/utilities.cc

@@ -14,6 +14,7 @@
 #include "src/jthread.hpp"
 #include "src/mdc.hpp"
 #include "src/num_utils.hpp"
+#include "include/crow_all.h"
 
 namespace wwc {
     template <typename T, template <typename, typename...> class Container,
