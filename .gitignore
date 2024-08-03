@@ -3,10 +3,10 @@ main.cpp
 .vscode
 build
 cmake/build
-Windows
 bin
 lib
 !thirdparty/grpc/third_party/cares/cares/src/lib
 !thirdparty/grpc/src/core/lib
 !thirdparty/grpc/src/core/lib/**/windows
 main
+.DS_store

@@ -63,9 +63,7 @@ if(ENABLE_CURLDEBUG)
   set_source_files_properties(memdebug.c curl_multibyte.c PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
 endif()
 
-if(BUILD_TESTING)
-  target_link_libraries(curlu PRIVATE ${CURL_LIBS})
-endif()
+
 
 transform_makefile_inc("Makefile.soname" "${CMAKE_CURRENT_BINARY_DIR}/Makefile.soname.cmake")
 include(${CMAKE_CURRENT_BINARY_DIR}/Makefile.soname.cmake)

@@ -2,7 +2,7 @@
 add_subdirectory(gflags)
 # add_subdirectory(cJson)
 add_subdirectory(curl-master)
-add_subdirectory(Crow)
+# add_subdirectory(Crow)
 # add_subdirectory(grpc)
 # file(GLOB GFLAGS_SOURCES gflags/src/*.cc)
 
