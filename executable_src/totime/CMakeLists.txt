@@ -1,10 +1,10 @@
-add_executable(tp main.cc)
+add_executable(tt main.cc)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
 )
 
 target_link_libraries(
-    tp PRIVATE cpp_tools
+    tt PRIVATE cpp_tools
 )
 

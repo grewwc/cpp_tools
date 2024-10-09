@@ -1,6 +1,5 @@
 #pragma once
 
-#include "download_utils.hpp"
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
@@ -13,7 +12,10 @@
 #include <regex>
 #include <sstream>
 #include <string>
+#include <typeinfo>
 #include <vector>
+
+#include "download_utils.hpp"
 
 namespace wwc {
 
@@ -59,8 +61,8 @@ namespace wwc {
         String &lstrip(char ch = ' ') noexcept {
             auto pos = find_first_not_of(ch);
             switch (pos) {
-            case std::string::npos: break;
-            default: this->erase(0, pos);
+                case std::string::npos: break;
+                default: this->erase(0, pos);
             }
             return *this;
         }
@@ -70,8 +72,8 @@ namespace wwc {
         String &rstrip(char ch = ' ') noexcept {
             std::string::size_type pos = find_last_not_of(ch);
             switch (pos) {
-            case std::string::npos: break;
-            default: this->erase(this->begin() + pos + 1, this->end());
+                case std::string::npos: break;
+                default: this->erase(this->begin() + pos + 1, this->end());
             }
             return *this;
         }
@@ -392,6 +394,41 @@ namespace wwc {
             return true;
         }
 
+        String url_encode(const String &value) const {
+            std::ostringstream escaped;
+            escaped.fill('0');
+            escaped << std::hex;
+
+            for (char c : value) {
+                // 不需要转义的字符直接添加
+                if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+                    escaped << c;
+                } else {
+                    // 需要转义的字符转换为 %XX 形式
+                    escaped << '%' << std::setw(2) << int((unsigned char)c);
+                }
+            }
+
+            return escaped.str();
+        }
+
+        String url_decode(const String &value) const {
+            std::ostringstream decoded;
+            for (size_t i = 0; i < value.length(); ++i) {
+                if (value[i] == '%' && i + 2 < value.length()) {
+                    // 解析 %XX 形式的编码
+                    std::string hex_str = value.substr(i + 1, 2);
+                    char decoded_char = static_cast<char>(std::strtol(hex_str.c_str(), nullptr, 16));
+                    decoded << decoded_char;
+                    i += 2;  // 跳过两个字符
+                } else {
+                    // 直接添加未编码的字符
+                    decoded << value[i];
+                }
+            }
+            return decoded.str();
+        }
+
         // bool startsWith(const char *begin) const noexcept;
         // bool endsWith(const char *end) const noexcept;
 
@@ -492,9 +529,9 @@ namespace wwc {
             const char *beg = spaceSaperated.c_str();
             while (true) {
                 switch (type) {
-                case 'l': i = strtol(beg, &end, 10); break;
-                case 'd': i = strtod(beg, &end); break;
-                default: printf("unknow type %c\n", type); goto end;
+                    case 'l': i = strtol(beg, &end, 10); break;
+                    case 'd': i = strtod(beg, &end); break;
+                    default: printf("unknow type %c\n", type); goto end;
                 }
                 if (errno == ERANGE) {
                     fprintf(stderr, "range error\n");
@@ -743,4 +780,4 @@ namespace wwc {
             return s;
         }
     };
-} // namespace wwc
+}  // namespace wwc
