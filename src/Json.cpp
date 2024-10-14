@@ -14,6 +14,9 @@ namespace wwc {
             return {};
         }
         const auto string_data = cJSON_GetObjectItemCaseSensitive(data, name);
+        if (string_data == nullptr) {
+            return {};
+        }
         const auto data_type = string_data->type;
         if (data_type != cJSON_String) {
             return {};
@@ -69,7 +72,11 @@ namespace wwc {
         if (!contains(name)) {
             return nullptr;
         }
-        const auto result = make_shared<JSONArray>(cJSON_GetObjectItemCaseSensitive(data, name));
+        const auto item = cJSON_GetObjectItemCaseSensitive(data, name);
+        if (item == nullptr) {
+            return nullptr;
+        }
+        const auto result = make_shared<JSONArray>(item);
         if (!result->valid_data()) {
             return nullptr;
         }
@@ -86,6 +93,9 @@ namespace wwc {
 
     shared_ptr<JSONObject> JSONObject::loads(const char* content) {
         cJSON* data = cJSON_Parse(content);
+        if (data == nullptr) {
+            return nullptr;
+        }
         const auto result = make_shared<JSONObject>(data, true);
         if (!result->valid_data()) {
             return nullptr;
@@ -104,6 +114,9 @@ namespace wwc {
 
     shared_ptr<JSONArray> JSONArray::loads(const char* content) {
         cJSON* data = cJSON_Parse(content);
+        if (data == nullptr) {
+            return nullptr;
+        }
         const auto result = make_shared<JSONArray>(data, true);
         if (!result->valid_data()) {
             return nullptr;
@@ -146,7 +159,11 @@ namespace wwc {
         if (!check_size(i)) {
             return nullptr;
         }
-        const auto result = make_shared<JSONObject>(cJSON_GetArrayItem(data, i));
+        const auto item = cJSON_GetArrayItem(data, i);
+        if (item == nullptr) {
+            return nullptr;
+        }
+        const auto result = make_shared<JSONObject>(item);
         if (!result->valid_data()) {
             return nullptr;
         }
@@ -157,7 +174,11 @@ namespace wwc {
         if (!check_size(i)) {
             return nullptr;
         }
-        const auto result = make_shared<JSONArray>(cJSON_GetArrayItem(data, i));
+        const auto item = cJSON_GetArrayItem(data, i);
+        if (item == nullptr) {
+            return nullptr;
+        }
+        const auto result = make_shared<JSONArray>(item);
         if (!result->valid_data()) {
             return nullptr;
         }
