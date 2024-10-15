@@ -781,3 +781,20 @@ namespace wwc {
         }
     };
 }  // namespace wwc
+
+
+
+namespace std
+{
+    template<>
+    struct hash<wwc::String> 
+    {
+      public:
+        std::size_t operator()(const wwc::String& s) const noexcept {
+            return hasher(s);
+        }
+      private:
+        const hash<std::string> hasher = std::hash<std::string>{};
+        
+    };
+}
