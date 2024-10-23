@@ -29,7 +29,7 @@ int get_n(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]) {
     int n = get_n(argc, argv);
-    String output = run_cmd("git log --oneline --format=\"%h %ad %s\" --date=short");
+    String output = run_cmd("git log --oneline --format=\"%h %an %ad %s\" --date=short");
     Stream<std::vector, String>::from(output.split('\n'))
         .filter([](String line) { return !line.contains("Merge"); })
         .first(n)
