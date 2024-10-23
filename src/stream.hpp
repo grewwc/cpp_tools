@@ -130,6 +130,11 @@ namespace wwc {
             wwc::quick_sort(data_);
             return from(std::move(data_));
         }
+        
+        Stream<Container, T> reverse() {
+            std::reverse(data_.begin(), data_.end());
+            return from(std::move(data_));
+        }
 
         void for_each(const std::function<void(const T&)>& func) {
             for (const auto& item : data_) {

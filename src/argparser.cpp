@@ -64,6 +64,7 @@ namespace wwc {
                                                std::forward_as_tuple(ArgType::BOOL, "true", info.help_msg.c_str()));
                 }
                 prev_arg_name = val;
+                is_flag = true;
 
             } else {
                 if (prev_arg_name.empty()) {
@@ -104,6 +105,7 @@ namespace wwc {
         const ArgInfo &info = named_args_.at(key);
         switch (info.arg_type) {
         case ArgType::BOOL: return info.val == "true";
+        case ArgType::STRING: return info.val;
         default: return {};
         }
     }
