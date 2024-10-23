@@ -5296,9 +5296,12 @@ namespace crow
 #include <cmath>
 #include <cfloat>
 
-
+#ifndef isinf
 using std::isinf;
+#endif
+#ifndef isnan
 using std::isnan;
+#endif
 
 
 namespace crow // NOTE: Already documented in "crow/app.h"
