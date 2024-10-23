@@ -5296,12 +5296,6 @@ namespace crow
 #include <cmath>
 #include <cfloat>
 
-#ifndef isinf
-using std::isinf;
-#endif
-#ifndef isnan
-using std::isnan;
-#endif
 
 
 namespace crow // NOTE: Already documented in "crow/app.h"
@@ -7137,7 +7131,7 @@ namespace crow // NOTE: Already documented in "crow/app.h"
                     {
                         if (v.nt == num_type::Floating_point || v.nt == num_type::Double_precision_floating_point)
                         {
-                            if (isnan(v.num.d) || isinf(v.num.d))
+                            if (std::isnan(v.num.d) || std::isinf(v.num.d))
                             {
                                 out += "null";
                                 CROW_LOG_WARNING << "Invalid JSON value detected (" << v.num.d << "), value set to null";
