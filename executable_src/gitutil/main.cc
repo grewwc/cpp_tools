@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     int n = get_n(argc, argv);
     String output = run_cmd("git log --oneline --format=\"%h %an %ad %s\" --date=short");
     Stream<std::vector, String>::from(output.split('\n'))
-        .filter([](String line) { return !line.contains("Merge"); })
+        .filter([](String line) { return !line.is_match(R"(\w+\s.*\s\d{4}-\d{2}-\d{2}\sMerge.*)"); })
         .first(n)
         .for_each([](const String& s) {std::cout << s << std::endl;});
     
