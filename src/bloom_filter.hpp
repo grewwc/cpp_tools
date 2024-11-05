@@ -43,7 +43,7 @@ namespace wwc {
     private:
         static void calc_next_hash_val(std::size_t& hash_val) noexcept {
             if (hash_val == 0) {
-                return 0;
+                return;
             }
             hash_val = (hash_val - 1) / 3;
         }
