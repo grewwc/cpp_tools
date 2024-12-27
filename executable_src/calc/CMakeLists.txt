@@ -5,6 +5,6 @@ include_directories(
 )
 
 target_link_libraries(
-    j PRIVATE cpp_tools
+    c PRIVATE cpp_tools
 )
 
