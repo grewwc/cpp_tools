@@ -1,5 +1,5 @@
 
-add_subdirectory(gflags)
+# add_subdirectory(gflags)
 # add_subdirectory(cJson)
 add_subdirectory(curl-master)
 # add_subdirectory(Crow)

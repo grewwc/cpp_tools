@@ -1,12 +1,12 @@
-#include <gflags/gflags.h>
 
 #include <iostream>
 #include <unordered_set>
-
+#include "NormalUtils.hpp"
 #include "Json.hpp"
 
 using Ptr_JSONArray = std::shared_ptr<wwc::JSONArray>;
 using Ptr_JSONObject = std::shared_ptr<wwc::JSONObject>;
+using namespace wwc;
 #define MAX_VAL_LEN 100
 
 struct config {
@@ -223,14 +223,22 @@ bool print_summary(const std::unordered_set<std::string>& data, const char* file
     return false;
 }
 
-DEFINE_bool(array, false, "If file contains JSONArray.");
-DEFINE_bool(h, false, "Help information.");
-DEFINE_bool(k, false, "Only check if keys are the same, ignore values.");
-DEFINE_bool(v, false, "Verbose add diff value.");
+// DEFINE_bool(array, false, "If file contains JSONArray.");
+// DEFINE_bool(h, false, "Help information.");
+// DEFINE_bool(k, false, "Only check if keys are the same, ignore values.");
+// DEFINE_bool(v, false, "Verbose add diff value.");
 
 int main(int argc, char* argv[]) {
-    google::ParseCommandLineFlags(&argc, &argv, true);
-    if (FLAGS_h || argc < 3) {
+    String s;
+    ArgumentParser parser(argc, argv);
+    parser.add_argument("-h", ArgType::BOOL, "false", "print help message");
+    parser.add_argument("-k", ArgType::BOOL, "false", "Only check if keys are the same, ignore values.");
+    parser.add_argument("-v", ArgType::BOOL, "false", "Verbose add diff value.");
+    parser.add_argument("-array", ArgType::BOOL, "false", "If file contains JSONArray.");
+    ParsedResult result = parser.parse();
+    
+    // google::ParseCommandLineFlags(&argc, &argv, true);
+    if (std::get<bool>(result["h"]) || argc < 3) {
         print_usage();
         return 0;
     }
@@ -240,10 +248,10 @@ int main(int argc, char* argv[]) {
     std::unordered_set<std::string> keyset_2;
     std::unordered_set<std::string> diff_keys;
     config options{
-        .only_compare_keys = FLAGS_k, 
-        .verbose = FLAGS_v
+        .only_compare_keys = std::get<bool>(result["k"]), 
+        .verbose = std::get<bool>(result["v"]) 
     };
-    if (FLAGS_array) {
+    if (std::get<bool>(result["array"])) {
         const auto result = compare_json_array(f1, f2, keyset_1, keyset_2, diff_keys, options);
         if (result != 0) {
             return result;
