@@ -3,6 +3,7 @@ shopt -s expand_aliases
 
 source $HOME/.bashrc
 
+# set which cmake to use
 while getopts :b: OPT; do
     case "$OPT" in
     b)
@@ -16,4 +17,5 @@ echo "building project..."
 
 
 cmake -S . -B build
-cmake --build build -j 6
+threads=$((`nproc -all`/2 + 1))
+cmake --build build -j ${threads}
