@@ -1,4 +1,5 @@
 #include "normal_utils.hpp"
+#include "src/String.hpp"
 
 namespace wwc {
     std::string run_cmd(const char* cmd) {
@@ -14,5 +15,16 @@ namespace wwc {
             result += buf;
         }
         return result;
+    }
+    
+    std::optional<std::string> get_md5(const char* real_path) {
+        String cmd = wwc::String::format("md5sum \"%s\"", real_path);
+        wwc::String md5 = run_cmd(cmd.c_str());
+
+        auto vec = md5.split();
+        if (vec.size() > 0) {
+            return {vec[0]};
+        }
+        return {};
     }
 }  // namespace wwc
