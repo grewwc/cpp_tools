@@ -19,8 +19,6 @@ file(GLOB CJSON_SOURCES ${CMAKE_SOURCE_DIR}/thirdparty/cJSON/*.c)
 
 target_sources(cpp_tools PRIVATE
     ${SRC_SOURCE}
-    ${GFLAGS_SOURCES}
-    ${GLOG_SOURCES}
     ${CJSON_SOURCES}
 )
 

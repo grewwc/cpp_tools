@@ -43,5 +43,4 @@ include_directories(cpp_tools  ${Threads_INCLUDE_DIRS})
 target_link_libraries(cpp_tools PRIVATE Threads::Threads)
 
 target_include_directories(cpp_tools PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(cpp_tools PUBLIC ${CMAKE_SOURCE_DIR}/include/glog)
 
