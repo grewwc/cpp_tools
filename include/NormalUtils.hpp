@@ -18,6 +18,7 @@
 #include "src/bloom_filter.hpp"
 #include "src/lru_cache.hpp"
 #include "src/normal_utils.hpp"
+#include "src/chan.hpp"
 
 namespace wwc {
     template <typename T, template <typename, typename...> class Container,
