@@ -13,9 +13,9 @@ while getopts :b: OPT; do
 
 done
 
-echo "building project..."
 
 
 cmake -S . -B build
-threads=$((`nproc -all`/2 + 1))
+threads=$((`nproc --all`/2 + 1))
+echo "building project with thread:${threads}"
 cmake --build build -j ${threads}
