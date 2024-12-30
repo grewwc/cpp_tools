@@ -1,8 +1,11 @@
 #pragma once
+
 #include <iostream>
 #include <list>
 #include <memory>
 #include <unordered_map>
+#include <optional>
+
 namespace wwc {
 
     template <typename Key, typename Value>
@@ -15,7 +18,7 @@ namespace wwc {
         LruCache(std::size_t cap) : cap_{cap}, count_{0} {
         }
 
-        void put(const Key& key, const Value& value) {
+        void put(const Key& key, std::shared_ptr<const Value> value) {
             const auto it = map_.find(key);
             if (it == map_.cend()) {
                 auto new_node = std::make_shared<node>(key, value);
@@ -30,13 +33,17 @@ namespace wwc {
                 move_to_head(it->second);
             }
         }
+        
+        void put(const Key& key, Value value) {
+            put(key, std::make_shared<const Value>(value));
+        }
 
-        const std::shared_ptr<Value> get(const Key& key) {
+        const std::shared_ptr<const Value> get(const Key& key) {
             const auto it = map_.find(key);
             if (it == map_.cend()) {
                 return {};
             }
-            auto res = std::make_shared<Value>(it->second->value);
+            auto res = it->second->value;
             // modify linked list
             move_to_head(it->second);
             return res;
@@ -50,10 +57,10 @@ namespace wwc {
         std::shared_ptr<node> tail_ = nullptr;
 
         struct node {
-            explicit node(const Key& key, const Value& value) : key{key}, value{value} {
+            explicit node(const Key& key, std::shared_ptr<const Value> value) : key{key}, value(value) {
             }
             const Key& key;
-            const Value& value;
+            std::shared_ptr<const Value> value;
             std::shared_ptr<node> prev = nullptr;
             std::shared_ptr<node> next = nullptr;
         };

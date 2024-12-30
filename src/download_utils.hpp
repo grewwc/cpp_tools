@@ -1,6 +1,6 @@
 #pragma once
 
-#include "thirdparty/curl-master/include/curl/curl.h"
+// #include "thirdparty/curl-master/include/curl/curl.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
