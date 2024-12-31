@@ -122,6 +122,11 @@ namespace wwc {
             std::lock_guard<wwc::hierachy_mutex> lk{mu_};
             return dq_.empty();
         }
+        
+        void clear() noexcept {
+            std::lock_guard<wwc::hierachy_mutex> lk(mu_);
+            dq_.clear();
+        }
 
     private:
         std::deque<T> dq_;
