@@ -72,7 +72,6 @@ namespace wwc {
                 chan<T>* vec[2] = {ch1, ch2};
                 while (true) {
                     int ready_cnt = 0;
-                    int close_cnt = 0;
                     for (int i = 0; i < 2; i++) {
                         auto ch = vec[i];
                         if (closed[i]) {
@@ -80,7 +79,6 @@ namespace wwc {
                         }
                         if (ch->is_closed()) {
                             closed[i] = true;
-                            close_cnt++;
                             continue;
                         }
                         while (ch->readable()) {
