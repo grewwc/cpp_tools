@@ -7,7 +7,7 @@ namespace wwc {
     template <typename T>
     class chan {
     public:
-        explicit chan(size_t size = 0) : sz_{size}, q_{size == 0 ? 1 : size}, blocking_q_{1} {
+        explicit chan(size_t size = 0) : sz_{size}, q_{size == 0 ? 1 : size} {
         }
         chan(const chan<T>& other) = delete;
         chan(chan<T>&& other) : sz_{other.sz_}, q_{std::move(other.q_)}, closed_{other.closed_.load()} {
@@ -20,23 +20,15 @@ namespace wwc {
             if (closed_) {
                 throw std::logic_error("channel has been closed");
             }
-            q_.push(std::move(val), timeout_mills);
             if (send_callback_ != nullptr) {
                 send_callback_();
             }
-            if (sz_ == 0) {
-                blocking_q_.push(true);
-                blocking_q_.push(true);
-            }
+            q_.push(std::move(val), timeout_mills);
         }
 
         std::optional<T> recv(size_t timeout_mills = -1) {
             if (closed_) {
                 return {};
-            }
-            if (sz_ == 0) {
-                blocking_q_.get(timeout_mills);
-                blocking_q_.get(timeout_mills);
             }
             return q_.get(timeout_mills);
         }
@@ -50,7 +42,6 @@ namespace wwc {
                 return;
             }
             q_.clear();
-            blocking_q_.clear();
             q_.end_flag_ = true;
             q_.pop_cond_.notify_all();
             q_.push_cond_.notify_all();
@@ -80,6 +71,8 @@ namespace wwc {
                 bool closed[2] = {};
                 chan<T>* vec[2] = {ch1, ch2};
                 while (true) {
+                    int ready_cnt = 0;
+                    int close_cnt = 0;
                     for (int i = 0; i < 2; i++) {
                         auto ch = vec[i];
                         if (closed[i]) {
@@ -87,9 +80,11 @@ namespace wwc {
                         }
                         if (ch->is_closed()) {
                             closed[i] = true;
+                            close_cnt++;
                             continue;
                         }
-                        if (ch->readable()) {
+                        while (ch->readable()) {
+                            ready_cnt++;
                             auto curr_value = ch->recv();
                             // std::cout << "readable value: " << curr_value.value() << std::endl;
                             if (!curr_value.has_value()) {
@@ -100,12 +95,14 @@ namespace wwc {
                     }
                     // all closed
                     if (closed[0] && closed[1]) {
-                        // std::cout << "closed \n"; 
+                        // std::cout << "closed \n";
                         result->close();
                         return;
                     }
-                    std::unique_lock<std::mutex> lk{*mu};
-                    cond->wait(lk);
+                    if (ready_cnt == 0) {
+                        std::unique_lock<std::mutex> lk{*mu};
+                        cond->wait(lk);
+                    }
                 }
             };
             pool_.submit_task(push_data);
@@ -121,9 +118,6 @@ namespace wwc {
             if (closed_) {
                 return false;
             }
-            if (sz_ == 0) {
-                // return !blocking_q_.empty();
-            }
             return !q_.empty();
         }
 
@@ -134,15 +128,12 @@ namespace wwc {
 
     private:
         blocking_queue<T> q_;
-        blocking_queue<bool> blocking_q_;
         const size_t sz_;
 
         std::atomic<bool> finished_send_;
         std::atomic<bool> closed_;
         std::function<void()> send_callback_ = nullptr;
         std::shared_ptr<std::condition_variable> close_cond_ = nullptr;
-
-        static std::thread t_;
         static BS::thread_pool pool_;
     };
 

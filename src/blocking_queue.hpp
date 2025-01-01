@@ -8,6 +8,7 @@
 #include <optional>
 
 #include "hierachy_mutex.hpp"
+#include "src/semaphore.hpp"
 
 namespace wwc {
 
@@ -27,10 +28,15 @@ namespace wwc {
         blocking_queue<T>& operator=(blocking_queue<T>&& other) = delete;
 
         bool push(const T val, long timeout_mills = -1) noexcept {
+            if (sz_ == 0) {
+                get_sem_.release();
+                push_sem_.acquire();
+            }
             std::unique_lock<wwc::hierachy_mutex> lk(mu_);
             while (!end_flag_) {
                 const auto sz = dq_.size();
-                if (sz == sz_) {
+                const auto cap = sz_ == 0 ? 1 : sz_;
+                if (sz == cap) {
                     if (timeout_mills < 0) {
                         push_cond_.wait(lk);
                     } else {
@@ -49,6 +55,10 @@ namespace wwc {
         }
 
         std::optional<T> get(long timeout_mills = -1) noexcept {
+            if (sz_ == 0) {
+                push_sem_.release();
+                get_sem_.acquire();
+            }
             std::unique_lock<wwc::hierachy_mutex> lk{mu_};
             while (!end_flag_) {
                 if (dq_.empty()) {
@@ -109,5 +119,7 @@ namespace wwc {
         std::condition_variable_any pop_cond_;
         mutable wwc::hierachy_mutex mu_{100};
         std::atomic<bool> end_flag_ = false;
+        wwc::semaphore push_sem_;
+        wwc::semaphore get_sem_;
     };
 }  // namespace wwc
