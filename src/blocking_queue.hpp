@@ -3,6 +3,7 @@
 #include <chrono>
 #include <condition_variable>
 #include <deque>
+#include <functional>
 #include <mutex>
 #include <optional>
 
@@ -11,16 +12,26 @@
 namespace wwc {
 
     template <typename T>
+    class chan;
+
+    template <typename T>
     class blocking_queue {
     public:
-        explicit blocking_queue(const size_t sz) noexcept : sz_{sz}, dq_{std::deque<T>(0)} {}
+        friend class chan<T>;
 
-        bool push(const T val, const size_t timeout_mills = 0) noexcept {
+        explicit blocking_queue(const size_t sz) noexcept : sz_{sz}, dq_{std::deque<T>(0)} {
+        }
+        blocking_queue(blocking_queue<T>&& other) : sz_{other.sz_}, dq_{std::move(other.dq_)} {
+        }
+
+        blocking_queue<T>& operator=(blocking_queue<T>&& other) = delete;
+
+        bool push(const T val, long timeout_mills = -1) noexcept {
             std::unique_lock<wwc::hierachy_mutex> lk(mu_);
-            while (true) {
+            while (!end_flag_) {
                 const auto sz = dq_.size();
                 if (sz == sz_) {
-                    if (timeout_mills == 0) {
+                    if (timeout_mills < 0) {
                         push_cond_.wait(lk);
                     } else {
                         const std::cv_status status = push_cond_.wait_for(lk, std::chrono::milliseconds(timeout_mills));
@@ -37,53 +48,11 @@ namespace wwc {
             return true;
         }
 
-        bool try_push(const T val) noexcept {
-            std::lock_guard<wwc::hierachy_mutex> lk{mu_};
-            if (dq_.size() == sz_) {
-                return false;
-            }
-            dq_.push_back(std::move(val));
-            pop_cond_.notify_one();
-            return true;
-        }
-
-        bool pop(size_t timeout_mills = 0) noexcept {
+        std::optional<T> get(long timeout_mills = -1) noexcept {
             std::unique_lock<wwc::hierachy_mutex> lk{mu_};
-            while (true) {
+            while (!end_flag_) {
                 if (dq_.empty()) {
-                    if (timeout_mills == 0) {
-                        pop_cond_.wait(lk);
-                    } else {
-                        const std::cv_status status = pop_cond_.wait_for(lk, std::chrono::milliseconds(timeout_mills));
-                        if (status == std::cv_status::timeout) {
-                            return false;
-                        }
-                    }
-
-                } else {
-                    dq_.pop_front();
-                    push_cond_.notify_one();
-                    break;
-                }
-            }
-            return true;
-        }
-
-        bool try_pop() noexcept {
-            std::lock_guard<wwc::hierachy_mutex> lk{mu_};
-            if (dq_.empty()) {
-                return false;
-            }
-            dq_.pop_front();
-            push_cond_.notify_one();
-            return true;
-        }
-
-        std::optional<T> get(size_t timeout_mills = 0) noexcept {
-            std::unique_lock<wwc::hierachy_mutex> lk{mu_};
-            while (true) {
-                if (dq_.empty()) {
-                    if (timeout_mills == 0) {
+                    if (timeout_mills < 0) {
                         pop_cond_.wait(lk);
                     } else {
                         const std::cv_status status = pop_cond_.wait_for(lk, std::chrono::milliseconds(timeout_mills));
@@ -120,9 +89,14 @@ namespace wwc {
 
         bool size() const noexcept {
             std::lock_guard<wwc::hierachy_mutex> lk{mu_};
-            return dq_.empty();
+            return dq_.size();
         }
-        
+
+        bool capacity() const noexcept {
+            std::lock_guard<wwc::hierachy_mutex> lk{mu_};
+            return sz_;
+        }
+
         void clear() noexcept {
             std::lock_guard<wwc::hierachy_mutex> lk(mu_);
             dq_.clear();
@@ -133,6 +107,7 @@ namespace wwc {
         const size_t sz_;
         std::condition_variable_any push_cond_;
         std::condition_variable_any pop_cond_;
-        wwc::hierachy_mutex mu_{100};
+        mutable wwc::hierachy_mutex mu_{100};
+        std::atomic<bool> end_flag_ = false;
     };
 }  // namespace wwc
