@@ -56,7 +56,7 @@ namespace wwc {
         }
 
         static std::shared_ptr<chan<T>> select(chan<T>* ch1, chan<T>* ch2) {
-            auto result = std::make_shared<chan<T>>(1);
+            auto result = std::make_shared<chan<T>>();
             auto mu = std::make_shared<std::mutex>();
             auto cond = std::make_shared<std::condition_variable>();
             ch1->register_send_callback([=]() {
