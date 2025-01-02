@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <atomic>
 #include <thread>
-#include "src/jthread.hpp"
 #include "blocking_queue.hpp"
+#include "src/jthread.hpp"
 
 namespace wwc {
     template <typename T>
@@ -18,7 +18,7 @@ namespace wwc {
         chan<T>& operator=(chan<T>&& other) = delete;
         ~chan() = default;
 
-        void send(T val, size_t timeout_mills = -1) {
+        void send(T val, long timeout_mills = -1) {
             if (closed_) {
                 throw std::logic_error("channel has been closed");
             }
@@ -26,11 +26,22 @@ namespace wwc {
                 send_callback_();
             }
             q_.push(std::move(val), timeout_mills);
+            if (sz_ == 0) {
+                blocking_q_.push(nullptr);
+                blocking_q_.push(nullptr);
+            }
+            if (send_callback_ != nullptr) {
+                send_callback_();
+            }
         }
 
-        std::optional<T> recv(size_t timeout_mills = -1) {
+        std::optional<T> recv(long timeout_mills = -1) {
             if (closed_) {
                 return {};
+            }
+            if (sz_ == 0) {
+                blocking_q_.get();
+                blocking_q_.get();
             }
             return q_.get(timeout_mills);
         }
@@ -45,8 +56,11 @@ namespace wwc {
             }
             q_.clear();
             q_.end_flag_ = true;
+            blocking_q_.end_flag_ = true;
             q_.pop_cond_.notify_all();
             q_.push_cond_.notify_all();
+            blocking_q_.pop_cond_.notify_all();
+            blocking_q_.push_cond_.notify_all();
             if (close_cond_) {
                 close_cond_->notify_all();
             }
@@ -55,6 +69,21 @@ namespace wwc {
 
         bool is_closed() const noexcept {
             return closed_;
+        }
+        
+        template<typename FirstChan, typename... Chan>
+        static std::shared_ptr<chan<T>> select(FirstChan* first, Chan*... others) {
+            constexpr size_t sz = sizeof...(others);
+            if constexpr (sz == 0) {
+                return nullptr;
+            }
+            if constexpr (sz == 1) {
+                return std::shared_ptr<chan<T>>(static_cast<chan<T>*>(first));
+            }
+            auto merged_others = chan<T>::select(others...);
+            auto res = chan<T>::select(first, merged_others.get());
+            res->children_.push_back(merged_others);
+            return res;
         }
 
         static std::shared_ptr<chan<T>> select(chan<T>* ch1, chan<T>* ch2) {
@@ -85,12 +114,12 @@ namespace wwc {
                         }
                         while (ch->readable()) {
                             ready_cnt++;
-                            auto curr_value = ch->recv();
+                            auto&& curr_value = ch->recv();
                             // std::cout << "readable value: " << curr_value.value() << std::endl;
                             if (!curr_value.has_value()) {
                                 throw logic_error("current channel is not readable");
                             }
-                            result->send(curr_value.value());
+                            result->send(std::move(curr_value.value()));
                         }
                     }
                     // all closed
@@ -109,11 +138,7 @@ namespace wwc {
             return result;
         }
 
-        static optional<int> select() {
-            return {};
-        }
-
-    private:
+    public:
         bool readable() const noexcept {
             if (closed_) {
                 return false;
@@ -126,14 +151,16 @@ namespace wwc {
             send_callback_ = send_callback;
         }
 
-    private:
+    public:
         blocking_queue<T> q_;
+        blocking_queue<T*> blocking_q_{1};
         const size_t sz_;
 
-        std::atomic<bool> finished_send_;
-        std::atomic<bool> closed_;
+        std::atomic<bool> finished_send_ = false;
+        std::atomic<bool> closed_ = false;
         std::function<void()> send_callback_ = nullptr;
         std::shared_ptr<std::condition_variable> close_cond_ = nullptr;
         std::unique_ptr<wwc::jthread<std::function<void(void)>>> ptr_ = nullptr;
+        std::vector<std::shared_ptr<chan<T>>> children_;
     };
 }  // namespace wwc

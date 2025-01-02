@@ -19,15 +19,16 @@ namespace wwc {
     class blocking_queue {
     public:
         friend class chan<T>;
+        friend class chan<std::remove_pointer_t<T>>;
 
-        explicit blocking_queue(const size_t sz) noexcept : sz_{sz}, dq_{std::deque<T>(0)} {
+        explicit blocking_queue(const size_t sz) noexcept : sz_{sz} {
         }
         blocking_queue(blocking_queue<T>&& other) : sz_{other.sz_}, dq_{std::move(other.dq_)} {
         }
 
         blocking_queue<T>& operator=(blocking_queue<T>&& other) = delete;
 
-        bool push(const T val, long timeout_mills = -1) noexcept {
+        bool push(T val, long timeout_mills = -1) noexcept {
             if (sz_ == 0) {
                 get_sem_.release();
                 push_sem_.acquire();
@@ -72,7 +73,7 @@ namespace wwc {
                     }
 
                 } else {
-                    T data = dq_.front();
+                    T data = std::move(dq_.front());
                     dq_.pop_front();
                     push_cond_.notify_one();
                     return std::optional{std::move(data)};
