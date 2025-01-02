@@ -39,11 +39,12 @@ namespace wwc {
             if (closed_) {
                 return {};
             }
+            auto&& res = q_.get(timeout_mills);
             if (sz_ == 0) {
                 blocking_q_.get();
                 blocking_q_.get();
             }
-            return q_.get(timeout_mills);
+            return std::move(res);
         }
 
         size_t size() const noexcept {
@@ -54,7 +55,9 @@ namespace wwc {
             if (closed_) {
                 return;
             }
+            std::lock_guard<std::mutex> lk{mu_};
             q_.clear();
+            blocking_q_.clear();
             q_.end_flag_ = true;
             blocking_q_.end_flag_ = true;
             q_.pop_cond_.notify_all();
@@ -70,8 +73,8 @@ namespace wwc {
         bool is_closed() const noexcept {
             return closed_;
         }
-        
-        template<typename FirstChan, typename... Chan>
+
+        template <typename FirstChan, typename... Chan>
         static std::shared_ptr<chan<T>> select(FirstChan* first, Chan*... others) {
             constexpr size_t sz = sizeof...(others);
             if constexpr (sz == 0) {
@@ -117,7 +120,8 @@ namespace wwc {
                             auto&& curr_value = ch->recv();
                             // std::cout << "readable value: " << curr_value.value() << std::endl;
                             if (!curr_value.has_value()) {
-                                throw logic_error("current channel is not readable");
+                                std::cout << "what: " << ch->q_.dq_.front() << std::endl;
+                                continue;
                             }
                             result->send(std::move(curr_value.value()));
                         }
@@ -138,7 +142,7 @@ namespace wwc {
             return result;
         }
 
-    public:
+    private:
         bool readable() const noexcept {
             if (closed_) {
                 return false;
@@ -151,7 +155,7 @@ namespace wwc {
             send_callback_ = send_callback;
         }
 
-    public:
+    private:
         blocking_queue<T> q_;
         blocking_queue<T*> blocking_q_{1};
         const size_t sz_;
@@ -162,5 +166,6 @@ namespace wwc {
         std::shared_ptr<std::condition_variable> close_cond_ = nullptr;
         std::unique_ptr<wwc::jthread<std::function<void(void)>>> ptr_ = nullptr;
         std::vector<std::shared_ptr<chan<T>>> children_;
+        std::mutex mu_;
     };
 }  // namespace wwc
