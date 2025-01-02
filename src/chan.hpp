@@ -1,8 +1,10 @@
 #pragma once
 #include <algorithm>
 #include <atomic>
-#include "BS_thread_pool.hpp"
+#include <thread>
+#include "src/jthread.hpp"
 #include "blocking_queue.hpp"
+
 namespace wwc {
     template <typename T>
     class chan {
@@ -103,7 +105,7 @@ namespace wwc {
                     }
                 }
             };
-            pool_.submit_task(push_data);
+            result->ptr_ = std::make_unique<wwc::jthread<std::function<void(void)>>>(std::move(push_data));
             return result;
         }
 
@@ -132,9 +134,6 @@ namespace wwc {
         std::atomic<bool> closed_;
         std::function<void()> send_callback_ = nullptr;
         std::shared_ptr<std::condition_variable> close_cond_ = nullptr;
-        static BS::thread_pool pool_;
+        std::unique_ptr<wwc::jthread<std::function<void(void)>>> ptr_ = nullptr;
     };
-
-    template <typename T>
-    BS::thread_pool chan<T>::pool_{4};
 }  // namespace wwc
