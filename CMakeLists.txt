@@ -17,7 +17,5 @@ add_subdirectory(thirdparty)
 add_subdirectory(src)
 add_subdirectory(executable_src)
 
-file(COPY "NormalUtils.hpp" DESTINATION ${CMAKE_SOURCE_DIR}/include)
-
 # add_subdirectory(tests)
 
