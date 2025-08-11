@@ -120,7 +120,7 @@ namespace wwc {
                             auto&& curr_value = ch->recv();
                             // std::cout << "readable value: " << curr_value.value() << std::endl;
                             if (!curr_value.has_value()) {
-                                std::cout << "what: " << ch->q_.dq_.front() << std::endl;
+                                // std::cout << "what: " << ch->q_.dq_.front() << std::endl;
                                 continue;
                             }
                             result->send(std::move(curr_value.value()));
