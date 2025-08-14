@@ -8,99 +8,98 @@
 
 namespace wwc {
 
-    template <typename Key, typename Value>
-    class LruCache {
-    public:
+    template <typename K, typename V>
+    class LruCache final {
+    private:
         struct node;
 
     public:
-        // constructors
-        LruCache(std::size_t cap) : cap_{cap}, count_{0} {
+        optional<std::reference_wrapper<const V>> get(const K& key);
+        const V& get_or(const K& key, const V& default_val);
+        void put(const K& key, const V& val);
+
+        explicit LruCache(int cap) : cap_{cap} {
+            head_ = std::make_shared<node>();
+            tail_ = std::make_shared<node>();
+            head_->next = tail_;
+            tail_->prev = head_;
         }
 
-        void put(const Key& key, std::shared_ptr<const Value> value) {
-            const auto it = map_.find(key);
-            if (it == map_.cend()) {
-                auto new_node = std::make_shared<node>(key, value);
-                map_.emplace(key, new_node);
-                move_to_head(new_node);
-                count_++;
-                if (count_ > cap_) {
-                    remove_tail();
-                }
-            } else {
-                map_[key] = it->second;
-                move_to_head(it->second);
-            }
-        }
-        
-        void put(const Key& key, Value value) {
-            put(key, std::make_shared<const Value>(value));
-        }
-
-        const std::shared_ptr<const Value> get(const Key& key) {
-            const auto it = map_.find(key);
-            if (it == map_.cend()) {
-                return {};
-            }
-            auto res = it->second->value;
-            // modify linked list
-            move_to_head(it->second);
-            return res;
-        }
-
-    public:
-        std::size_t cap_ = 0;
-        std::size_t count_ = 0;
-        std::unordered_map<Key, std::shared_ptr<node>> map_;
-        std::shared_ptr<node> head_ = nullptr;
-        std::shared_ptr<node> tail_ = nullptr;
-
+    private:
+        unordered_map<K, shared_ptr<node>> m_;
         struct node {
-            explicit node(const Key& key, std::shared_ptr<const Value> value) : key{key}, value(value) {
-            }
-            const Key& key;
-            std::shared_ptr<const Value> value;
-            std::shared_ptr<node> prev = nullptr;
-            std::shared_ptr<node> next = nullptr;
+            K key;
+            V val;
+            weak_ptr<node> prev;
+            shared_ptr<node> next;
         };
+        shared_ptr<node> head_ = nullptr;
+        shared_ptr<node> tail_ = nullptr;
+        int cap_ = 0;
 
-        void move_to_head(std::shared_ptr<node> n) {
-            if (n == nullptr || n == head_) {
-                return;
-            }
-            if (head_ == nullptr) {
-                head_ = n;
-                tail_ = n;
-                return;
-            }
-            auto prev = n->prev;
+    private:
+        void move_to_front(shared_ptr<node> n) {
+            auto prev = n->prev.lock();
             auto next = n->next;
-            if (prev != nullptr) {
-                prev->next = next;
-            }
-            if (next != nullptr) {
-                next->prev = prev;
-            }
-            n->next = head_;
-            head_->prev = n;
-            head_ = n;
-            if (tail_ == n) {
-                tail_ = n->prev;
-            }
-        }
+            prev->next = next;
+            next->prev = prev;
 
+            auto front = head_->next;
+
+            head_->next = n;
+            n->prev = head_;
+
+            n->next = front;
+            front->prev = prev;
+        }
+        void insert_to_front(shared_ptr<node> n) {
+            auto front = head_->next;
+            head_->next = n;
+            n->prev = head_;
+
+            front->prev = n;
+            n->next = front;
+        }
         void remove_tail() {
-            if (tail_ == nullptr || count_ == 0) {
-                return;
-            }
-            map_.erase(tail_->key);
-            auto prev = tail_->prev;
-            if (prev != nullptr) {
-                prev->next = nullptr;
-            }
-            tail_ = prev;
-            count_--;
+            auto tail = tail_->prev.lock();
+            auto prev = tail->prev.lock();
+            prev->next = tail_;
+            tail_->prev = prev;
         }
     };
-}  // namespace wwc
+
+    template <typename K, typename V>
+    std::optional<std::reference_wrapper<const V>> LruCache<K, V>::get(const K& key) {
+        if (m_.find(key) == m_.cend()) {
+            return std::nullopt;
+        }
+        auto n = m_.at(key);
+        move_to_front(n);
+        return {std::cref(n->val)};
+    }
+
+    template <typename K, typename V>
+    void LruCache<K, V>::put(const K& key, const V& val) {
+        if (m_.find(key) != m_.cend()) {
+            auto node = m_[key];
+            node->val = val;
+            return;
+        }
+        auto new_node = make_shared<node>();
+        m_[key] = new_node;
+        new_node->val = val;
+        new_node->key = key;
+        insert_to_front(new_node);
+        if (m_.size() > cap_) {
+            auto tail = tail_->prev.lock();
+            remove_tail();
+            m_.erase(tail->key);
+        }
+    }
+
+    template <typename K, typename V>
+    const V& LruCache<K, V>::get_or(const K& key, const V& default_val) {
+        return get(key).value_or(default_val);
+    }
+
+}
