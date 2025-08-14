@@ -14,7 +14,7 @@ namespace wwc {
         struct node;
 
     public:
-        optional<std::reference_wrapper<const V>> get(const K& key);
+        std::optional<std::reference_wrapper<const V>> get(const K& key);
         const V& get_or(const K& key, const V& default_val);
         void put(const K& key, const V& val);
 
@@ -26,19 +26,19 @@ namespace wwc {
         }
 
     private:
-        unordered_map<K, shared_ptr<node>> m_;
+        std::unordered_map<K, std::shared_ptr<node>> m_;
         struct node {
             K key;
             V val;
-            weak_ptr<node> prev;
-            shared_ptr<node> next;
+            std::weak_ptr<node> prev;
+            std::shared_ptr<node> next;
         };
-        shared_ptr<node> head_ = nullptr;
-        shared_ptr<node> tail_ = nullptr;
+        std::shared_ptr<node> head_ = nullptr;
+        std::shared_ptr<node> tail_ = nullptr;
         int cap_ = 0;
 
     private:
-        void move_to_front(shared_ptr<node> n) {
+        void move_to_front(std::shared_ptr<node> n) {
             auto prev = n->prev.lock();
             auto next = n->next;
             prev->next = next;
@@ -52,7 +52,7 @@ namespace wwc {
             n->next = front;
             front->prev = prev;
         }
-        void insert_to_front(shared_ptr<node> n) {
+        void insert_to_front(std::shared_ptr<node> n) {
             auto front = head_->next;
             head_->next = n;
             n->prev = head_;
@@ -85,7 +85,7 @@ namespace wwc {
             node->val = val;
             return;
         }
-        auto new_node = make_shared<node>();
+        auto new_node = std::make_shared<node>();
         m_[key] = new_node;
         new_node->val = val;
         new_node->key = key;
@@ -103,3 +103,5 @@ namespace wwc {
     }
 
 }
+
+

@@ -4,44 +4,25 @@
 
 #include "RandomUtils.hpp"
 #include "Types.hpp"
+#include "include/crow_all.h"
 #include "src/String.hpp"
 #include "src/algorithm.hpp"
 #include "src/argparser.hpp"
 #include "src/barrier.hpp"
+#include "src/bloom_filter.hpp"
+#include "src/chan.hpp"
 #include "src/countdown_latch.hpp"
+#include "src/custom_concepts.hpp"
 #include "src/download_utils.hpp"
 #include "src/fileutils.hpp"
 #include "src/jthread.hpp"
-#include "src/mdc.hpp"
-#include "src/num_utils.hpp"
-#include "include/crow_all.h"
-#include "src/bloom_filter.hpp"
 #include "src/lru_cache.hpp"
+#include "src/mdc.hpp"
 #include "src/normal_utils.hpp"
-#include "src/custom_concepts.hpp"
-#include "src/chan.hpp"
+#include "src/num_utils.hpp"
 
-namespace wwc {
-    template <typename T, template <typename, typename...> class Container,
-              typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
-    Container<const T *> to_pointer_container(const Container<T> &container) {
-        Container<const T *> result;
-        result.reserve(container.size());
-        std::transform(std::cbegin(container), std::cend(container), std::back_inserter<Container<const T *>>(result),
-                       [](const T &val) { return &val; });
-        return result;
-    }
-
-    template <typename T, template <typename, typename...> class Container,
-              typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
-    Container<T *> to_pointer_container(Container<T> &container) {
-        Container<T *> result;
-        result.reserve(container.size());
-        std::transform(std::begin(container), std::end(container), std::back_inserter<Container<T *>>(result),
-                       [](T &val) { return &val; });
-        return result;
-    }
-
+namespace wwc
+{
     template <typename... Args>
         requires AllPrintable<Args...>
     void print(Args&&... args) {
@@ -50,12 +31,46 @@ namespace wwc {
         std::cout << std::endl;
     }
 
+
+    template <typename... Args>
+    requires AllPrintable<Args...>
+    void print(const std::tuple<Args...>& t) {
+        std::cout << "(";
+        std::apply(
+            [](const auto&... args) {
+                bool first = true;
+                (..., (std::cout << (first ? "" : ", "), std::cout<<args, first = false));
+            },
+            t);
+        std::cout << ")" << std::endl;
+    }
+
+    template <typename... Args>
+    requires AllPrintable<Args...>
+    void print(std::tuple<Args...>&& t) {
+        std::cout << "(";
+        std::apply(
+            [](auto&&... args) {
+                bool first = true;
+                ((std::cout << (first ? "" : ", "), std::cout << args, first = false), ...);
+            },
+            std::move(t));
+        std::cout << ")" << std::endl;
+    }
+
+    template <typename T, typename U = T>
+    requires Printable<T> && Printable<U>
+    void print(const std::pair<T, U>& p) {
+        std::cout << p.first << " " << p.second << std::endl;
+    }
+    
+    
     template <template <typename...> typename Container, typename T>
         requires Printable<T>
     void print(const Container<T>& container) {
         std::ostringstream ss;
         for (const auto& val : container) {
-            ss << val << ", ";
+            ss << val << " ";
         }
         std::string result = ss.str();
         std::string_view view = result;
@@ -64,5 +79,38 @@ namespace wwc {
         }
         std::cout << view << std::endl;
     }
+}
+
+namespace wwc {    
+    template <typename T,
+              template <typename, typename...> class Container,
+              typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
+    Container<const T*> to_pointer_container(const Container<T>& container) {
+        Container<const T*> result;
+        result.reserve(container.size());
+        std::transform(std::cbegin(container), std::cend(container), std::back_inserter<Container<const T*>>(result),
+                       [](const T& val) {
+                           return &val;
+                       });
+        return result;
+    }
+
+    template <typename T,
+              template <typename, typename...> class Container,
+              typename = std::enable_if_t<!std::is_pointer_v<std::decay_t<T>>>>
+    Container<T*> to_pointer_container(Container<T>& container) {
+        Container<T*> result;
+        result.reserve(container.size());
+        std::transform(std::begin(container), std::end(container), std::back_inserter<Container<T*>>(result),
+                       [](T& val) {
+                           return &val;
+                       });
+        return result;
+    }
+
+    
 
 }  // namespace wwc
+
+
+
