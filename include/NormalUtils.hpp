@@ -18,6 +18,7 @@
 #include "src/bloom_filter.hpp"
 #include "src/lru_cache.hpp"
 #include "src/normal_utils.hpp"
+#include "src/custom_concepts.hpp"
 #include "src/chan.hpp"
 
 namespace wwc {
@@ -47,4 +48,28 @@ namespace wwc {
         ((std::cout << " " << std::forward<Args>(args)), ...);
         std::cout << std::endl;
     }
+
+    template <typename... Args>
+        requires AllPrintable<Args...>
+    void print(Args&&... args) {
+        bool first = true;
+        ((std::cout << (first ? "" : " ") << std::forward<Args>(args), first = false), ...);
+        std::cout << std::endl;
+    }
+
+    template <template <typename...> typename Container, typename T>
+        requires Printable<T>
+    void print(const Container<T>& container) {
+        std::ostringstream ss;
+        for (const auto& val : container) {
+            ss << val << ", ";
+        }
+        std::string result = ss.str();
+        std::string_view view = result;
+        if (auto idx = result.rfind(','); idx != std::string::npos) {
+            view = view.substr(0, idx);
+        }
+        std::cout << view << std::endl;
+    }
+
 }  // namespace wwc
