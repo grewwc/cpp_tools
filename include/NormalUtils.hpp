@@ -42,13 +42,6 @@ namespace wwc {
         return result;
     }
 
-    template <typename FirstArg, typename... Args>
-    void print(FirstArg &&first, Args &&...args) {
-        std::cout << std::forward<FirstArg>(first);
-        ((std::cout << " " << std::forward<Args>(args)), ...);
-        std::cout << std::endl;
-    }
-
     template <typename... Args>
         requires AllPrintable<Args...>
     void print(Args&&... args) {
