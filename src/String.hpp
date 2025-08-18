@@ -79,7 +79,7 @@ namespace wwc {
             return *this;
         }
 
-        String &rtrim(char ch = ' ') noexcept { return lstrip(ch); }
+        String &rtrim(char ch = ' ') noexcept { return rstrip(ch); }
 
         String &strip(char ch = ' ') noexcept {
             lstrip(ch);
