@@ -44,3 +44,6 @@ target_link_libraries(cpp_tools PRIVATE Threads::Threads)
 
 target_include_directories(cpp_tools PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
+add_subdirectory(Catch2)
+
+

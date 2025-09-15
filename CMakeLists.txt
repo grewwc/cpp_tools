@@ -17,5 +17,7 @@ add_subdirectory(thirdparty)
 add_subdirectory(src)
 add_subdirectory(executable_src)
 
-# add_subdirectory(tests)
+enable_testing()
+
+add_subdirectory(tests)
 

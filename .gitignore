@@ -10,3 +10,5 @@ lib
 !thirdparty/grpc/src/core/lib/**/windows
 main
 .DS_store
+.idea
+Testing
