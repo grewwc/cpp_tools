@@ -294,17 +294,7 @@ namespace wwc {
         }
 
         std::vector<int> find_all_substr(const std::string &sub, std::size_t begin = 0) const noexcept {
-            std::vector<int> result;
-            int idx = -1;
-            while (true) {
-                idx = kmp(*this, sub, begin);
-                if (idx == -1) {
-                    break;
-                }
-                result.push_back(idx);
-                begin = static_cast<std::size_t>(idx + sub.size());
-            }
-            return result;
+            return kmp(sub, begin);
         }
 
         bool is_match(String re_pattern) const noexcept {
@@ -553,48 +543,58 @@ namespace wwc {
             return res;
         }
 
-        static std::vector<int> get_kmp_prefix_array(const std::string &t) noexcept {
-            std::vector<int> prefix(t.size(), -1);
-            for (int j = 2; j < t.size(); j++) {
-                int k = prefix[j - 1];
-                if (k == -1) {
-                    prefix[j] = (t[0] == t[j - 1]) ? 1 : -1;
+        std::vector<int> next_arr(const std::string_view view) const noexcept {
+            const auto size = view.size();
+            std::vector<int> result(size, 0);
+            size_t i = 1;
+            size_t len = 0;
+            while (i < size) {
+                if (view[i] == view[len]) {
+                    ++len;
+                    result[i] = len;
+                    ++i;
                 } else {
-                    if (t[k] == t[j - 1]) {
-                        prefix[j] = k + 1;
+                    if (len > 0) {
+                        len = view[len - 1];
                     } else {
-                        int kk = k;
-                        while (kk != -1) {
-                            kk = prefix[kk];
-                            if (kk == -1) {
-                                prefix[j] = (t[0] == t[j - 1]) ? 1 : -1;
-                            } else if (t[kk] == t[j - 1]) {
-                                prefix[j] = kk + 1;
-                                break;
-                            }
-                        }
+                        len = 0;
+                        ++i;
                     }
                 }
             }
-            return prefix;
+            return result;
         }
 
-        static int kmp(const std::string &s, const std::string &sub, std::size_t begin) noexcept {
-            std::vector<int> next = get_kmp_prefix_array(sub);
-            std::size_t i = begin;
-            int j = 0;
-            while (i < s.size() && j < sub.size()) {
-                if (s[i] == sub[j]) {
-                    i++, j++;
+        std::vector<int> kmp(const std::string &pattern, size_t begin) const noexcept {
+            if (begin >= size()) {
+                return {};
+            }
+            std::vector<int> result;
+            std::string_view view {data()+begin, size()-begin};
+            std::string_view pattern_view {pattern.data(), pattern.size()};
+            const size_t n = view.size(), m = pattern_view.size();
+            size_t i = 0, j = 0;
+            std::vector<int> next = next_arr(pattern_view);
+#ifdef WWC_DEBUG
+            for (const int val : next) {
+                std::cout << val << ", ";
+            }
+            std::cout << "\n";
+#endif
+            while (i < n) {
+                if (operator[](i) == pattern[j]) {
+                    ++i, ++j;
+                } else if (j == 0) {
+                    ++i;
                 } else {
-                    j = next[j];
-                    if (j == -1) {
-                        i++;
-                        j = 0;
-                    }
+                    j = next[j-1];
+                }
+                if (j == m) {
+                    result.push_back(i-j+begin);
+                    j = next[j-1];
                 }
             }
-            return j == sub.size() ? i - sub.size() : -1;
+            return result;
         }
 
         static std::string expanduser(const char *path) noexcept {
@@ -696,7 +696,7 @@ namespace wwc {
                 result[i] = val;
             }
             result[l1] = overflow;
-#if 0
+#ifdef WWC_DEBUG
             for(auto e : result) {
                 std::cout << e << ",";
             }
@@ -799,3 +799,4 @@ namespace std
         
     };
 }
+
